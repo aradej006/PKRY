@@ -1,22 +1,22 @@
-package com.pkry.user;
+package com.pkry.user.Server;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
+import java.security.PublicKey;
 
-/**
- * Created by arade on 29-Dec-15.
- */
 @Startup
 @Singleton
 public class Server {
 
     @Inject
     UserModule userModule;
+    PublicKey publicKey;
+    SHA sha;
 
     @PostConstruct
     public void init(){
-        System.out.println("Working");
+        System.out.println("WorkingSERVER");
     }
 }
