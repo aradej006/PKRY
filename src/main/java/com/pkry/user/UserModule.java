@@ -22,7 +22,7 @@ public class UserModule{
     public String AD(String login, String password, String passwordIndexes, String AD, String ADIndexes){
         return managementModule.insertAD(login, password,passwordIndexes,AD, ADIndexes);
     }
-    public String doTransfer(String data){
-        return managementModule.doTransfer(data);
-    }
+//    public String doTransfer(String data){
+////        return managementModule.doTransfer(data);
+//    }
 }

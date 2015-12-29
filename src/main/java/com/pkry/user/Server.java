@@ -1,5 +1,7 @@
 package com.pkry.user;
 
+import com.pkry.db.model.AddressService;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -16,6 +18,9 @@ public class Server {
     private Key publicKey;
     private Key privateKey;
 
+    @Inject
+    AddressService addressService;
+
     @PostConstruct
     public void init(){
 
@@ -31,6 +36,9 @@ public class Server {
         }
 
         System.out.println("WorkingSERVER");
+
+        addressService.toString();
+
     }
 
     public String doHash(String data)throws NoSuchAlgorithmException {
@@ -52,33 +60,33 @@ public class Server {
         return userModule.Login(data);
     }
 
-    public String clientPassword(String data){
-        return userModule.Password(data);
-    }
+//    public String clientPassword(String data){
+////        return userModule.Password(data);
+//    }
 
-    public String clientAD(String data){
-        return userModule.AD(data);
-    }
+//    public String clientAD(String data){
+////        return userModule.AD(data);
+//    }
 
-    public String clientDoTransfer(String data){
-        return userModule.doTransfer(data);
-    }
+//    public String clientDoTransfer(String data){
+//        return userModule.doTransfer(data);
+//    }
 
-    public void handleClientMessage(String data){
-        if(data.contains("GetPublicKey")){
-            send(getPublicKey().toString());
-        }
-        else if(data.contains("Login")){
-            send(clientLogin(data));
-        }
-        else if(data.contains("Password")){
-            send(clientPassword(data));
-        }
-        else if(data.contains("AD")){
-            send(clientAD(data));
-        }
-        else if(data.contains("DoTransfer")){
-            send(clientDoTransfer(data));
-        }
-    }
+//    public void handleClientMessage(String data){
+//        if(data.contains("GetPublicKey")){
+//            send(getPublicKey().toString());
+//        }
+//        else if(data.contains("Login")){
+//            send(clientLogin(data));
+//        }
+//        else if(data.contains("Password")){
+//            send(clientPassword(data));
+//        }
+//        else if(data.contains("AD")){
+//            send(clientAD(data));
+//        }
+//        else if(data.contains("DoTransfer")){
+//            send(clientDoTransfer(data));
+//        }
+//    }
 }
