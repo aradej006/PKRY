@@ -8,11 +8,6 @@ import javax.inject.Named;
  */
 @Named
 @RequestScoped
-public class LoginDB {
-
-    public boolean login(String username, String password){
-        return false;
-    }
-
+public class DbModule {
 
 }

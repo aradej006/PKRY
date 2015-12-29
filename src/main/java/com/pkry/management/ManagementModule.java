@@ -1,6 +1,6 @@
 package com.pkry.management;
 
-import com.pkry.db.LoginDB;
+import com.pkry.db.DbModule;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -11,14 +11,9 @@ import javax.inject.Named;
  */
 @Named
 @RequestScoped
-public class Login {
+public class ManagementModule {
 
     @Inject
-    LoginDB loginDB;
-
-    public boolean login(String username, String password){
-        return loginDB.login(username,password);
-    }
-
+    DbModule dbModule;
 
 }
