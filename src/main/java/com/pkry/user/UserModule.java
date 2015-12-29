@@ -16,11 +16,11 @@ public class UserModule{
     public String Login(String login){
         return managementModule.Login(login);
     }
-    public String Password(String password){
-        return managementModule.Password(password);
+    public String Password(String login, String password, String passwordIndexes){
+        return managementModule.insertPassword(login, password, passwordIndexes);
     }
-    public String AD(String AD){
-        return managementModule.AD(AD);
+    public String AD(String login, String password, String passwordIndexes, String AD, String ADIndexes){
+        return managementModule.insertAD(login, password,passwordIndexes,AD, ADIndexes);
     }
     public String doTransfer(String data){
         return managementModule.doTransfer(data);
