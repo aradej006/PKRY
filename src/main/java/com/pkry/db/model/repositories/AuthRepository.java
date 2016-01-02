@@ -1,4 +1,4 @@
-package com.pkry.db.model.dao;
+package com.pkry.db.model.repositories;
 
 import com.pkry.db.model.entities.Auth;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +10,7 @@ import java.util.List;
  * Created by arade on 29-Dec-15.
  */
 @Repository
-public interface AuthDAO extends JpaRepository<Auth, Long>{
-//    List<Auth> findByLogin(String login);
+public interface AuthRepository extends JpaRepository<Auth, Long> {
+    List<Auth> findByLogin(String login);
+    List<Auth> findById(Long id);
 }

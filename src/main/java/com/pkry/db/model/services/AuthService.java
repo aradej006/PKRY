@@ -1,6 +1,6 @@
 package com.pkry.db.model.services;
 
-import com.pkry.db.model.dao.AuthDAO;
+import com.pkry.db.model.repositories.AuthRepository;
 import com.pkry.db.model.entities.Account;
 import com.pkry.db.model.entities.Address;
 import com.pkry.db.model.entities.Auth;
@@ -21,18 +21,16 @@ import java.text.SimpleDateFormat;
 public class AuthService {
 
     @Inject
-    AuthDAO authDAO;
+    AuthRepository authRepository;
 
     @PostConstruct
     public void init() {
-        authDAO.toString();
-        initAuthDAO();
-
+        authRepository.toString();
     }
 
-    private void initAuthDAO(){
+    public void initAuthDAO(){
         System.out.println("INIT_AUTH_DAO");
-        if(authDAO.findAll().size()==0){
+        if(authRepository.findAll().size()==0){
             Address address = new Address();
             address.setCity("Warszawa");
             address.setBuildingNumber("5");
@@ -66,7 +64,7 @@ public class AuthService {
             auth.setAccount(account);
             account.setAuth(auth);
 
-            authDAO.save(auth);
+            authRepository.save(auth);
         }
     }
 

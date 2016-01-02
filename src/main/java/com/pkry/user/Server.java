@@ -1,5 +1,7 @@
 package com.pkry.user;
 
+import com.pkry.db.model.services.AuthService;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -16,6 +18,9 @@ public class Server {
     private Key publicKey;
     private Key privateKey;
 
+    @Inject
+    AuthService authService;
+
     @PostConstruct
     public void init() {
 
@@ -31,6 +36,8 @@ public class Server {
         }
 
         System.out.println("WorkingSERVER");
+
+        authService.initAuthDAO();
 
     }
 
