@@ -38,4 +38,12 @@ public class DbModule {
     public String getAccount(String login, String password, String passwordIndexes, String ad, String adIndexes) {
         return "Account";
     }
+
+    public boolean checkMoney(String login, double money){
+        return true;
+    }
+
+    public boolean doTransfer(String login, double money){
+        return true;
+    }
 }
