@@ -1,8 +1,6 @@
 package com.pkry.db.model.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by arade on 29-Dec-15.
@@ -15,6 +13,57 @@ public class Address {
     Long id;
 
     String street;
+
+    String buildingNumber;
+
+    String city;
+
+    String flatNumber;
+
+    String postCode;
+
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "address")
+    Owner owner;
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+    public String getBuildingNumber() {
+        return buildingNumber;
+    }
+
+    public void setBuildingNumber(String buildingNumber) {
+        this.buildingNumber = buildingNumber;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getFlatNumber() {
+        return flatNumber;
+    }
+
+    public void setFlatNumber(String flatNumber) {
+        this.flatNumber = flatNumber;
+    }
+
+    public String getPostCode() {
+        return postCode;
+    }
+
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
+    }
 
     public String getStreet() {
         return street;

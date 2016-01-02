@@ -1,7 +1,5 @@
 package com.pkry.user;
 
-import com.pkry.db.model.AddressService;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -18,11 +16,8 @@ public class Server {
     private Key publicKey;
     private Key privateKey;
 
-    @Inject
-    AddressService addressService;
-
     @PostConstruct
-    public void init(){
+    public void init() {
 
         KeyPairGenerator keyPairGenerator = null;
         try {
@@ -37,26 +32,24 @@ public class Server {
 
         System.out.println("WorkingSERVER");
 
-        addressService.toString();
-
     }
 
-    public String doHash(String data)throws NoSuchAlgorithmException {
+    public String doHash(String data) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] hash = digest.digest(data.getBytes());
 
         return hash.toString();
     }
 
-    public void send(String data){
+    public void send(String data) {
 
     }
 
-    public Key getPublicKey(){
+    public Key getPublicKey() {
         return publicKey;
     }
 
-    public String clientLogin(String data){
+    public String clientLogin(String data) {
         return userModule.Login(data);
     }
 
