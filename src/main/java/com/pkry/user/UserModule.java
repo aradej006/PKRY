@@ -1,7 +1,6 @@
 package com.pkry.user;
 import com.pkry.management.ManagementModule;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
