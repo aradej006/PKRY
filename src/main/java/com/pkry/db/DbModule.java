@@ -1,7 +1,11 @@
 package com.pkry.db;
 
 
+import com.pkry.db.model.services.AuthService;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
@@ -10,6 +14,15 @@ import javax.inject.Named;
 @Named
 @RequestScoped
 public class DbModule {
+
+    @Inject
+    AuthService authService;
+
+    @PostConstruct
+    public void init(){
+        authService.toString();
+    }
+
     public int checkLogin(String login) {
         return 4;
     }

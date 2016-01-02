@@ -2,12 +2,10 @@ package com.pkry.management;
 
 import com.pkry.db.DbModule;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import java.lang.String;
 /**
  * Created by arade on 29-Dec-15.
  */
