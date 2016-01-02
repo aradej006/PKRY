@@ -20,7 +20,7 @@ public class DbModule {
 
     @PostConstruct
     public void init(){
-        authService.toString();//tostring
+        authService.toString();//tost
     }
 
     public int checkLogin(String login) {
