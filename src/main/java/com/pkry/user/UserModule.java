@@ -13,16 +13,19 @@ public class UserModule{
     @Inject
     ManagementModule managementModule;
 
-    public String Login(String login){
+    public String Login(String login) {
         return managementModule.Login(login);
     }
-    public String Password(String login, String password, String passwordIndexes){
+
+    public String insertPassword(String login,String password, String passwordIndexes){
         return managementModule.insertPassword(login, password, passwordIndexes);
     }
-    public AccountDTO AD(String login, String password, String passwordIndexes, String AD, String ADIndexes){
-        return managementModule.insertAD(login, password,passwordIndexes,AD, ADIndexes);
+
+    public AccountDTO insertAD(String login,String password, String passwordIndexes, String AD, String ADIndexes){
+        return managementModule.insertAD(login, password, passwordIndexes, AD, ADIndexes);
     }
-//    public String doTransfer(String data){
-////        return managementModule.doTransfer(data);
-//    }
+
+    public boolean doTransfer(String login, Double money){
+        return managementModule.doTransfer(login,money);
+    }
 }

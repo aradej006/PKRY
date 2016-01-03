@@ -1,6 +1,7 @@
 package com.pkry.user;
 
 import com.pkry.db.DbModule;
+import com.pkry.db.model.DTOs.AccountDTO;
 import com.pkry.db.model.services.AuthService;
 
 import javax.annotation.PostConstruct;
@@ -37,9 +38,8 @@ public class Server {
         }
 
         System.out.println("WorkingSERVER");
-
-        dbModule.checkLogin("Adrian");
-        dbModule.checkPassword("Adrian","Rej","034");
+        test();
+        System.out.println("KONIEC");
 
     }
 
@@ -50,45 +50,77 @@ public class Server {
         return hash.toString();
     }
 
-    public void send(String data) {
-
-    }
-
     public Key getPublicKey() {
         return publicKey;
     }
 
-    public String clientLogin(String data) {
-        return userModule.Login(data);
+    public String clientLogin(String login) {
+        return userModule.Login(login);
     }
 
-//    public String clientPassword(String data){
-////        return userModule.Password(data);
-//    }
+    public String clientPassword(String login,String password, String passwordIndexes){
+        return userModule.insertPassword(login, password, passwordIndexes);
+    }
 
-//    public String clientAD(String data){
-////        return userModule.AD(data);
-//    }
+    public AccountDTO clientAD(String login,String password, String passwordIndexes, String AD, String ADIndexes){
+        return userModule.insertAD(login, password, passwordIndexes, AD, ADIndexes);
+    }
 
-//    public String clientDoTransfer(String data){
-//        return userModule.doTransfer(data);
-//    }
+    public boolean clientDoTransfer(String login, Double money){
+        return userModule.doTransfer(login,money);
+    }
 
-//    public void handleClientMessage(String data){
-//        if(data.contains("GetPublicKey")){
-//            send(getPublicKey().toString());
-//        }
-//        else if(data.contains("Login")){
-//            send(clientLogin(data));
-//        }
-//        else if(data.contains("Password")){
-//            send(clientPassword(data));
-//        }
-//        else if(data.contains("AD")){
-//            send(clientAD(data));
-//        }
-//        else if(data.contains("DoTransfer")){
-//            send(clientDoTransfer(data));
-//        }
-//    }
+    public String handleClientMessage(String data){
+        String message = null;
+        if(data.contains("GetPublicKey")){
+            message = getPublicKey().toString();
+        }
+        else if(data.contains("Login")){
+            String[] array = data.split(" ");
+            message = clientLogin(array[1]);
+        }
+        else if(data.contains("Password")){
+            String[] array = data.split(" ");
+            message = clientPassword(array[1],array[2],array[3]);
+        }
+        else if(data.contains("AD")){
+            String[] array = data.split(" ");
+            AccountDTO accountDTO = clientAD(array[1],array[2],array[3],array[4],array[5]);
+        }
+        else if(data.contains("DoTransfer")){
+            String[] array = data.split(" ");
+
+            boolean okFlag = clientDoTransfer(array[1],Double.parseDouble(array[2]));
+            if (okFlag)
+                message = "UDAŁOSIĘ";
+            else
+                message = "NIEUDAŁOSIĘ";
+        }
+        return message;
+    }
+    public AccountDTO handleAD(String data){
+        AccountDTO accountDTO = null;
+        if(data.contains("AD")) {
+            String[] array = data.split(" ");
+            accountDTO = clientAD(array[1],array[2],array[3],array[4],array[5]);
+        }
+        return accountDTO;
+    }
+    public void test(){
+        String publicKey = null;
+        String passwordIndexes = null;
+        String ADIndexes = null;
+        String account = null;
+        String transfer = null;
+
+        String login = "Adrian";
+        AccountDTO accountDTO = null;
+
+        publicKey = handleClientMessage("GetPublicKey");
+        passwordIndexes = handleClientMessage("Login" + " " + login);
+        ADIndexes = handleClientMessage("Password" + " " + login + " " + "Rad" + " " + passwordIndexes);
+        accountDTO = handleAD("AD" + ' ' + login + " " + "Rad" + " " + passwordIndexes + "cyferki z peselu" + " " + ADIndexes);
+        transfer = handleClientMessage("DoTransfer" + " " + login + " " + "21312231");
+        System.out.println(transfer);
+    }
 }
