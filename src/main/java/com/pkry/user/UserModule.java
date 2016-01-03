@@ -1,4 +1,5 @@
 package com.pkry.user;
+import com.pkry.db.model.DTOs.AccountDTO;
 import com.pkry.management.ManagementModule;
 
 import javax.enterprise.context.RequestScoped;
@@ -18,7 +19,7 @@ public class UserModule{
     public String Password(String login, String password, String passwordIndexes){
         return managementModule.insertPassword(login, password, passwordIndexes);
     }
-    public String AD(String login, String password, String passwordIndexes, String AD, String ADIndexes){
+    public AccountDTO AD(String login, String password, String passwordIndexes, String AD, String ADIndexes){
         return managementModule.insertAD(login, password,passwordIndexes,AD, ADIndexes);
     }
 //    public String doTransfer(String data){
