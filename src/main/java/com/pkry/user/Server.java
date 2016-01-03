@@ -1,5 +1,6 @@
 package com.pkry.user;
 
+import com.pkry.db.DbModule;
 import com.pkry.db.model.services.AuthService;
 
 import javax.annotation.PostConstruct;
@@ -19,7 +20,7 @@ public class Server {
     private Key privateKey;
 
     @Inject
-    AuthService authService;
+    DbModule dbModule;
 
     @PostConstruct
     public void init() {
@@ -37,7 +38,8 @@ public class Server {
 
         System.out.println("WorkingSERVER");
 
-        authService.initAuthDAO();
+        dbModule.checkLogin("Adrian");
+        dbModule.checkPassword("Adrian","Rej","034");
 
     }
 

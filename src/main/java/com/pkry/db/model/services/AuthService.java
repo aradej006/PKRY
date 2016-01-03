@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * Created by arade on 29-Dec-15.
@@ -28,9 +29,9 @@ public class AuthService {
         authRepository.toString();
     }
 
-    public void initAuthDAO(){
+    public void initAuthDAO() {
         System.out.println("INIT_AUTH_DAO");
-        if(authRepository.findAll().size()==0){
+        if (authRepository.findAll().size() == 0) {
             Address address = new Address();
             address.setCity("Warszawa");
             address.setBuildingNumber("5");
@@ -68,8 +69,10 @@ public class AuthService {
         }
     }
 
-    public void test() {
-
+    public List<Auth> getAuthByLogin(String login) {
+        return authRepository.findByLogin(login);
     }
+
+
 
 }
