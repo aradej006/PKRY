@@ -1,6 +1,7 @@
 package com.pkry.db.model.entities;
 
 import javax.persistence.*;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -22,6 +23,11 @@ public class Auth {
 
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     Account account;
+
+    public void addAuthSession(AuthSession authSession){
+        if( authSessionList == null) authSessionList = new LinkedList<AuthSession>();
+        authSessionList.add(authSession);
+    }
 
     public Account getAccount() {
         return account;
