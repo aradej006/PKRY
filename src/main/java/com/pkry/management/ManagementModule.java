@@ -1,6 +1,7 @@
 package com.pkry.management;
 
 import com.pkry.db.DbModule;
+import com.pkry.db.model.DTOs.AccountDTO;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -33,7 +34,7 @@ public class ManagementModule {
 
     }
 
-    public String insertAD(String login, String password, String passwordIndexes, String AD, String ADIndexes){
+    public AccountDTO insertAD(String login, String password, String passwordIndexes, String AD, String ADIndexes){
         if(dbModule.checkAD(login, password,passwordIndexes,AD, ADIndexes)){
             return dbModule.getAccount(login, password, passwordIndexes,AD, ADIndexes);
 
