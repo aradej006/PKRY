@@ -17,6 +17,16 @@ public class AuthSessionDTO {
 
     AuthDTO authDTO;
 
+    boolean up;
+
+    public boolean isUp() {
+        return up;
+    }
+
+    public void setUp(boolean up) {
+        this.up = up;
+    }
+
     public Integer getMaxSessionTime() {
         return maxSessionTime;
     }

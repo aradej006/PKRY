@@ -1,5 +1,6 @@
 package com.pkry.db.model.DTOs;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class AuthDTO {
@@ -11,6 +12,11 @@ public class AuthDTO {
     List<AuthSessionDTO> authSessionDTOList;
 
     AccountDTO accountDTO;
+
+    public void addAuthSession(AuthSessionDTO authSessionDTO){
+        if( authSessionDTO == null ) authSessionDTOList = new LinkedList<AuthSessionDTO>();
+        authSessionDTOList.add(authSessionDTO);
+    }
 
     public String getLogin() {
         return login;

@@ -1,6 +1,7 @@
 package com.pkry.db.model.entities;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,12 +22,29 @@ public class Auth {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "auth")
     List<AuthSession> authSessionList;
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Account account;
 
-    public void addAuthSession(AuthSession authSession){
-        if( authSessionList == null) authSessionList = new LinkedList<AuthSession>();
+    public void addAuthSession(AuthSession authSession) {
+        if (authSessionList == null) authSessionList = new LinkedList<AuthSession>();
         authSessionList.add(authSession);
+    }
+
+    public AuthSession getNewestSession() {
+        if( authSessionList != null && authSessionList.size() > 0 ){
+            int newestIndex = 0;
+            Date newest = authSessionList.get(0).getStartTime();
+            for (int i = 0; i < authSessionList.size(); i++) {
+                if (newest.before(authSessionList.get(i).getStartTime())) {
+                    newestIndex = i;
+                    newest = authSessionList.get(i).getStartTime();
+                }
+            }
+            return authSessionList.get(newestIndex);
+        }else{
+            return null;
+        }
+
     }
 
     public Account getAccount() {

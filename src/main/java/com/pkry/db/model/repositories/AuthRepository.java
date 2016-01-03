@@ -12,5 +12,6 @@ import java.util.List;
 @Repository
 public interface AuthRepository extends JpaRepository<Auth, Long> {
     List<Auth> findByLogin(String login);
+    List<Auth> findByAccount_Number(String accountNumber);
     List<Auth> findById(Long id);
 }

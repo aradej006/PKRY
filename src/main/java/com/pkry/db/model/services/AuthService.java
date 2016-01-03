@@ -30,7 +30,7 @@ public class AuthService {
     }
 
     public void initAuthDAO() {
-        System.out.println("INIT_AUTH_DAO");
+        System.out.println("INIT_AUTH_Adrian_Radej");
         if (authRepository.findAll().size() == 0) {
             Address address = new Address();
             address.setCity("Warszawa");
@@ -67,12 +67,53 @@ public class AuthService {
 
             authRepository.save(auth);
         }
+        if (authRepository.findAll().size() == 1) {
+            Address address = new Address();
+            address.setCity("Tarnawa Mała");
+            address.setBuildingNumber("55");
+            address.setPostCode("23-465");
+
+            Owner owner = new Owner();
+            owner.setAddress(address);
+            address.setOwner(owner);
+            owner.setFirstname("Daniel");
+            owner.setLastname("Radej");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            try {
+                owner.setBirthDate(sdf.parse("06/08/1992"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            owner.setPesel("78788513465");
+
+            Account account = new Account();
+            account.setCurrency("PLN");
+            account.setBalance(8947569.5);
+            account.setNumber("00000000000000000000000000");
+            account.setOwner(owner);
+            owner.setAccount(account);
+
+            Auth auth = new Auth();
+            auth.setLogin("Daniel");
+            auth.setPassword("Radej");
+            auth.setAccount(account);
+            account.setAuth(auth);
+
+            authRepository.save(auth);
+        }
+
     }
 
     public List<Auth> getAuthByLogin(String login) {
         return authRepository.findByLogin(login);
     }
 
+    public void save(Auth auth){
+        authRepository.save(auth);
+    }
 
+    public List<Auth> getAuthByAccount_Number(String accountNumber){
+        return authRepository.findByAccount_Number(accountNumber);
+    }
 
 }

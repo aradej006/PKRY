@@ -44,10 +44,11 @@ public class ManagementModule {
     return null;
     }
 
-    public boolean doTransfer(String login, double money){
-        if(dbModule.checkMoney(login, money))
-            return dbModule.doTransfer(login, money);
-        return false;
+    public String doTransfer(String login, double money, String toAccount){
+        String message = dbModule.checkMoney(login, money);
+        if(message.equals("MONEY OK"))
+            return dbModule.doTransfer(login, money, toAccount);
+        return message;
     }
     private String generateIndexes(int passwordLength) {
 
@@ -71,7 +72,7 @@ public class ManagementModule {
 
        // System.out.println(list.toString().replace("[", "").replace("]", ""));
 
-        String indexes = "1,2,3";
+        String indexes = "123";
 //        String indexes1 = list.toString().replace("[", "").replace("]", "").replace(" ", "");
 
         return indexes;

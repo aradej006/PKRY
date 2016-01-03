@@ -55,16 +55,16 @@ public class Server {
         return userModule.Login(login);
     }
 
-    public String clientPassword(String login,String password, String passwordIndexes){
+    public String clientPassword(String login, String password, String passwordIndexes) {
         return userModule.insertPassword(login, password, passwordIndexes);
     }
 
-    public AccountDTO clientAD(String login,String password, String passwordIndexes, String AD, String ADIndexes){
+    public AccountDTO clientAD(String login, String password, String passwordIndexes, String AD, String ADIndexes) {
         return userModule.insertAD(login, password, passwordIndexes, AD, ADIndexes);
     }
 
-    public boolean clientDoTransfer(String login, Double money){
-        return userModule.doTransfer(login,money);
+    public String clientDoTransfer(String login, Double money, String toAccount) {
+        return userModule.doTransfer(login, money, toAccount);
     }
 
     public boolean clientLogout(String login){
@@ -73,30 +73,21 @@ public class Server {
 
     public String handleClientMessage(String data){
         String message = null;
-        if(data.contains("GetPublicKey")){
+        if (data.contains("GetPublicKey")) {
             message = getPublicKey().toString();
-        }
-        else if(data.contains("Login")){
+        } else if (data.contains("Login")) {
             String[] array = data.split(" ");
             message = clientLogin(array[1]);
-            System.out.println(message);
-        }
-        else if(data.contains("Password")){
+        } else if (data.contains("Password")) {
             String[] array = data.split(" ");
-            message = clientPassword(array[1],array[2],array[3]);
-        }
-        else if(data.contains("AD")){
+            message = clientPassword(array[1], array[2], array[3]);
+        } else if (data.contains("AD")) {
             String[] array = data.split(" ");
-            AccountDTO accountDTO = clientAD(array[1],array[2],array[3],array[4],array[5]);
-        }
-        else if(data.contains("DoTransfer")){
+            AccountDTO accountDTO = clientAD(array[1], array[2], array[3], array[4], array[5]);
+        } else if (data.contains("DoTransfer")) {
             String[] array = data.split(" ");
 
-            boolean okFlag = clientDoTransfer(array[1],Double.parseDouble(array[2]));
-            if (okFlag)
-                message = "UDAŁOSIĘ";
-            else
-                message = "NIEUDAŁOSIĘ";
+            message = clientDoTransfer(array[1], Double.parseDouble(array[2]), array[3]);
         }
 
         else if(data.contains("Logout")){
@@ -110,15 +101,17 @@ public class Server {
         }
         return message;
     }
-    public AccountDTO handleAD(String data){
+
+    public AccountDTO handleAD(String data) {
         AccountDTO accountDTO = null;
-        if(data.contains("AD")) {
+        if (data.contains("AD")) {
             String[] array = data.split(" ");
-            accountDTO = clientAD(array[1],array[2],array[3],array[4],array[5]);
+            accountDTO = clientAD(array[1], array[2], array[3], array[4], array[5]);
         }
         return accountDTO;
     }
-    public void test(){
+
+    public void test() {
         String publicKey = null;
         String passwordIndexes = null;
         String ADIndexes = null;
@@ -130,9 +123,9 @@ public class Server {
 
         publicKey = handleClientMessage("GetPublicKey");
         passwordIndexes = handleClientMessage("Login" + " " + login);
-        ADIndexes = handleClientMessage("Password" + " " + login + " " + "Rad" + " " + passwordIndexes);
-        accountDTO = handleAD("AD" + ' ' + login + " " + "Rad" + " " + passwordIndexes + "cyferki z peselu" + " " + ADIndexes);
-        transfer = handleClientMessage("DoTransfer" + " " + login + " " + "21312231");
+        ADIndexes = handleClientMessage("Password" + " " + login + " " + "ade" + " " + passwordIndexes);
+        accountDTO = handleAD("AD" + ' ' + login + " " + "ade" + " " + passwordIndexes +  " 209" + " " + ADIndexes);
+        transfer = handleClientMessage("DoTransfer" + " " + login + " " + "2" + " 00000000000000000000000000");
         logout = handleClientMessage("Logout" + " " + login);
         System.out.println(transfer);
         System.out.println(logout);

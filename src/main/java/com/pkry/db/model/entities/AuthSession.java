@@ -21,8 +21,18 @@ public class AuthSession {
 
     Date updateTime;
 
+    boolean up;
+
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     Auth auth;
+
+    public boolean isUp() {
+        return up;
+    }
+
+    public void setUp(boolean up) {
+        this.up = up;
+    }
 
     public Auth getAuth() {
         return auth;

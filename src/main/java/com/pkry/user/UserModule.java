@@ -25,8 +25,8 @@ public class UserModule{
         return managementModule.insertAD(login, password, passwordIndexes, AD, ADIndexes);
     }
 
-    public boolean doTransfer(String login, Double money){
-        return managementModule.doTransfer(login,money);
+    public String doTransfer(String login, Double money, String toAccount){
+        return managementModule.doTransfer(login,money, toAccount);
     }
 
     public boolean logout(String login){

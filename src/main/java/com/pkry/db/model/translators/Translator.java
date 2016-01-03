@@ -29,6 +29,7 @@ public final class Translator {
         authSession.setSessionId(authSessionDTO.getSessionId());
         authSession.setStartTime(authSessionDTO.getStartTime());
         authSession.setUpdateTime(authSessionDTO.getUpdateTime());
+        authSession.setUp(authSessionDTO.isUp());
         return authSession;
     }
 
@@ -63,6 +64,60 @@ public final class Translator {
         return address;
     }
 
+    public static AuthDTO toDTO(Auth auth){
+        AuthDTO authDTO = new AuthDTO();
+        authDTO.setPassword(auth.getPassword());
+        authDTO.setLogin(auth.getLogin());
+        authDTO.setAccountDTO(toDTO(auth.getAccount()));
+        authDTO.getAccountDTO().setAuthDTO(authDTO);
+        for (AuthSession authSession : auth.getAuthSessionList()) {
+            AuthSessionDTO authSessionDTO = toDTO(authSession);
+            authDTO.addAuthSession(authSessionDTO);
+            authSessionDTO.setAuthDTO(authDTO);
+        }
+        return null;
 
+    }
+
+    public static AuthSessionDTO toDTO(AuthSession authSession){
+        AuthSessionDTO authSessionDTO = new AuthSessionDTO();
+        authSessionDTO.setMaxSessionTime(authSession.getMaxSessionTime());
+        authSessionDTO.setSessionId(authSession.getSessionId());
+        authSessionDTO.setStartTime(authSession.getStartTime());
+        authSessionDTO.setUpdateTime(authSession.getUpdateTime());
+        authSessionDTO.setUp(authSession.isUp());
+        return authSessionDTO;
+    }
+
+    public static AccountDTO toDTO(Account account){
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setNumber(account.getNumber());
+        accountDTO.setBalance(account.getBalance());
+        accountDTO.setCurrency(account.getCurrency());
+        accountDTO.setOwnerDTO(toDTO(account.getOwner()));
+        accountDTO.getOwnerDTO().setAccountDTO(accountDTO);
+        return accountDTO;
+    }
+
+    public static OwnerDTO toDTO(Owner owner){
+        OwnerDTO ownerDTO = new OwnerDTO();
+        ownerDTO.setPesel(owner.getPesel());
+        ownerDTO.setBirthDate(owner.getBirthDate());
+        ownerDTO.setLastname(owner.getLastname());
+        ownerDTO.setFirstname(owner.getFirstname());
+        ownerDTO.setAddressDTO(toDTO(owner.getAddress()));
+        ownerDTO.getAddressDTO().setOwnerDTO(ownerDTO);
+        return ownerDTO;
+    }
+
+    public static AddressDTO toDTO(Address address){
+        AddressDTO addressDTO = new AddressDTO();
+        address.setStreet(address.getStreet());
+        address.setPostCode(address.getPostCode());
+        address.setFlatNumber(address.getFlatNumber());
+        address.setCity(address.getCity());
+        address.setBuildingNumber(address.getBuildingNumber());
+        return addressDTO;
+    }
 
 }
