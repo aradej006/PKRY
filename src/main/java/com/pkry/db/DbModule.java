@@ -69,4 +69,9 @@ public class DbModule {
     public boolean doTransfer(String login, double money) {
         return true;
     }
+
+
+    public boolean logout(String login) {
+        return true;
+    }
 }

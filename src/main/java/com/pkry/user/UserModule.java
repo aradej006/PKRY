@@ -28,4 +28,8 @@ public class UserModule{
     public boolean doTransfer(String login, Double money){
         return managementModule.doTransfer(login,money);
     }
+
+    public boolean logout(String login){
+        return managementModule.logout(login);
+    }
 }

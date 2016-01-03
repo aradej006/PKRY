@@ -20,9 +20,6 @@ public class Server {
     private Key publicKey;
     private Key privateKey;
 
-    @Inject
-    DbModule dbModule;
-
     @PostConstruct
     public void init() {
 
@@ -70,6 +67,10 @@ public class Server {
         return userModule.doTransfer(login,money);
     }
 
+    public boolean clientLogout(String login){
+        return userModule.logout(login);
+    }
+
     public String handleClientMessage(String data){
         String message = null;
         if(data.contains("GetPublicKey")){
@@ -78,6 +79,7 @@ public class Server {
         else if(data.contains("Login")){
             String[] array = data.split(" ");
             message = clientLogin(array[1]);
+            System.out.println(message);
         }
         else if(data.contains("Password")){
             String[] array = data.split(" ");
@@ -96,6 +98,16 @@ public class Server {
             else
                 message = "NIEUDAŁOSIĘ";
         }
+
+        else if(data.contains("Logout")){
+            String[] array = data.split(" ");
+            if(clientLogout(array[1])) {
+                message = "LogoutOK";
+            }
+            else {
+                message = "LogoutFalse";
+            }
+        }
         return message;
     }
     public AccountDTO handleAD(String data){
@@ -112,7 +124,7 @@ public class Server {
         String ADIndexes = null;
         String account = null;
         String transfer = null;
-
+        String logout = null;
         String login = "Adrian";
         AccountDTO accountDTO = null;
 
@@ -121,6 +133,8 @@ public class Server {
         ADIndexes = handleClientMessage("Password" + " " + login + " " + "Rad" + " " + passwordIndexes);
         accountDTO = handleAD("AD" + ' ' + login + " " + "Rad" + " " + passwordIndexes + "cyferki z peselu" + " " + ADIndexes);
         transfer = handleClientMessage("DoTransfer" + " " + login + " " + "21312231");
+        logout = handleClientMessage("Logout" + " " + login);
         System.out.println(transfer);
+        System.out.println(logout);
     }
 }

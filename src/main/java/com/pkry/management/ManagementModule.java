@@ -18,8 +18,6 @@ import java.util.Random;
 @RequestScoped
 public class ManagementModule {
 
-    int lenght;
-
     @Inject
     DbModule dbModule;
 
@@ -32,7 +30,6 @@ public class ManagementModule {
 
     public String insertPassword(String login, String password, String passwordIndexes){
             if(dbModule.checkPassword(login, password, passwordIndexes))
-
                 return generateIndexes(11); //skoro pesel to raczej 11 na stałe wpisujemy, chyba że ma być to w jakimś pliku config czy cuś
 
         return null;
@@ -78,6 +75,11 @@ public class ManagementModule {
 //        String indexes1 = list.toString().replace("[", "").replace("]", "").replace(" ", "");
 
         return indexes;
+    }
+
+
+    public boolean logout(String login){
+        return dbModule.logout(login);
     }
 
 
