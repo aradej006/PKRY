@@ -1,5 +1,10 @@
 package com.pkry.user.server;
 
+import javax.net.ServerSocketFactory;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
+import java.io.File;
 import java.io.IOException;
 import java.net.*;
 import java.util.LinkedList;
@@ -17,12 +22,23 @@ public class Server implements Runnable {
     private int port;
     private int backlog;
     private Handle handle;
-    private ServerSocket serverSocket;
+    private SSLServerSocket serverSocket;
 
     private Server() {
         clients = new LinkedList<Service>();
         running = false;
         _lastID = -1;
+
+        String path = null;
+        try {
+            path = new File(".").getCanonicalPath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.setProperty("javax.net.ssl.keyStore", "mySrvKeystore");
+        System.setProperty("javax.net.ssl.keyStorePassword", "123456");
+
     }
 
     public Server(int port, Handle handle) {
@@ -63,7 +79,7 @@ public class Server implements Runnable {
 
         while (running) {
             try {
-                addClientService(new Service(serverSocket.accept(), this, handle));
+                addClientService(new Service((SSLSocket) serverSocket.accept(), this, handle));
             } catch (SocketTimeoutException e) {
             } catch (IOException e) {
                 e.printStackTrace();
@@ -121,7 +137,9 @@ public class Server implements Runnable {
 
     private boolean setServer() {
         try {
-            serverSocket = new ServerSocket(port, backlog, inetAddress);
+            SSLServerSocketFactory sslServerSocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+            serverSocket = (SSLServerSocket) sslServerSocketfactory.createServerSocket(port, backlog, inetAddress);
+//            serverSocket = new ServerSocket(port, backlog, inetAddress);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

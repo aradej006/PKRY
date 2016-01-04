@@ -1,5 +1,6 @@
 package com.pkry.user.server;
 
+import javax.net.ssl.SSLSocket;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,7 +10,7 @@ import java.util.StringTokenizer;
 
 
 public class Service implements Runnable {
-    private Socket sslSocket;
+    private SSLSocket sslSocket;
     private boolean running;
     private Server server;
     private int id;
@@ -21,8 +22,9 @@ public class Service implements Runnable {
         running = false;
     }
 
-    public Service(Socket socket, Server server, Handle handle) {
+    public Service(SSLSocket socket, Server server, Handle handle) {
         this();
+
         running = true;
         this.sslSocket = socket;
         this.server = server;
@@ -63,12 +65,14 @@ public class Service implements Runnable {
     }
 
     public String receive() {
+        String message;
         try {
-            return input.readLine();
+            message = input.readLine();
         } catch (IOException e) {
             System.out.println("Error reading client (" + id + ").");
+            message = TProtocol.NULLCOMMAND;
         }
-        return TProtocol.NULLCOMMAND;
+        return message;
     }
 
     private void handleCommand(String request) {
@@ -92,6 +96,7 @@ public class Service implements Runnable {
         } else if (command.equals(TProtocol.STOPPED)) {
             running = false;
         } else if (command.equals(TProtocol.NULLCOMMAND)) {
+            sendData("siema");
             running = false;
         }
     }

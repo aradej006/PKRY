@@ -6,6 +6,7 @@ import com.pkry.db.model.services.AuthService;
 import com.pkry.user.server.Server;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
@@ -38,11 +39,16 @@ public class ServerModule {
         }
 
         System.out.println("WorkingSERVER");
-        test();
+//        test();
         System.out.println("KONIEC");
 
-        server = new Server(6000, new HandleClient());
+        server = new Server(7000, new HandleClient());
 
+    }
+
+    @PreDestroy
+    public void destroy(){
+        server.close();
     }
 
     public String doHash(String data) throws NoSuchAlgorithmException {
