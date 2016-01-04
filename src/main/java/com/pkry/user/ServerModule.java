@@ -22,6 +22,7 @@ public class ServerModule {
     private Key publicKey;
     private Key privateKey;
 
+    @Inject
     Server server;
 
     @Inject
@@ -47,7 +48,8 @@ public class ServerModule {
 
         handleClient.toString();
 
-        server = new Server(7000, handleClient);
+        server.setPort(7000);
+        if( !server.isRunning()) server.start();
 
         clientLogin("Adrian");
 

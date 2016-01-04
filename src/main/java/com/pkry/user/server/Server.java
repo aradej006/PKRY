@@ -1,6 +1,10 @@
 package com.pkry.user.server;
 
-import javax.net.ServerSocketFactory;
+import com.pkry.user.HandleClient;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
@@ -13,6 +17,7 @@ import java.util.List;
 /**
  * Created by Monika on 1/3/2016.
  */
+@Singleton
 public class Server implements Runnable {
 
     private List<Service> clients;
@@ -21,8 +26,11 @@ public class Server implements Runnable {
     private InetAddress inetAddress;
     private int port;
     private int backlog;
-    private Handle handle;
     private SSLServerSocket serverSocket;
+
+    @Inject
+    HandleClient handleClient;
+    Handle handle;
 
     private Server() {
         clients = new LinkedList<Service>();
@@ -44,7 +52,31 @@ public class Server implements Runnable {
     public Server(int port, Handle handle) {
         this();
         this.port = port;
+//        this.handle = handle;
+    }
+
+    @PostConstruct
+    public void init(){
+        handle = handleClient;
+    }
+
+    public Handle getHandle() {
+        return handle;
+    }
+
+    public void setHandle(Handle handle) {
         this.handle = handle;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void start(){
         setInetAddress();
         if (setServer()) {
             running = true;

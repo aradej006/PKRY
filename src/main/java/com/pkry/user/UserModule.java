@@ -2,12 +2,13 @@ package com.pkry.user;
 import com.pkry.db.model.DTOs.AccountDTO;
 import com.pkry.management.ManagementModule;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 @Named
-@RequestScoped
+@ApplicationScoped
 public class UserModule{
 
     @Inject

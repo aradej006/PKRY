@@ -11,6 +11,7 @@ import com.pkry.db.model.services.AuthService;
 import com.pkry.db.model.services.TransferService;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 @Named
-@RequestScoped
+@ApplicationScoped
 public class DbModule {
 
     @Inject

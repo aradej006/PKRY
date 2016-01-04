@@ -3,6 +3,7 @@ package com.pkry.management;
 import com.pkry.db.DbModule;
 import com.pkry.db.model.DTOs.AccountDTO;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,7 +16,7 @@ import java.util.Random;
  * Created by arade on 29-Dec-15.
  */
 @Named
-@RequestScoped
+@ApplicationScoped
 public class ManagementModule {
 
     @Inject
