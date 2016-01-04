@@ -3,6 +3,7 @@ package com.pkry.user;
 import com.pkry.db.DbModule;
 import com.pkry.db.model.DTOs.AccountDTO;
 import com.pkry.db.model.services.AuthService;
+import com.pkry.user.server.Server;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
@@ -12,13 +13,15 @@ import java.security.*;
 
 @Startup
 @Singleton
-public class Server {
+public class ServerModule {
 
     @Inject
     UserModule userModule;
 
     private Key publicKey;
     private Key privateKey;
+
+    Server server;
 
     @PostConstruct
     public void init() {
@@ -37,6 +40,8 @@ public class Server {
         System.out.println("WorkingSERVER");
         test();
         System.out.println("KONIEC");
+
+        server = new Server(6000, new HandleClient());
 
     }
 
