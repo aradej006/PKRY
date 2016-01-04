@@ -86,7 +86,7 @@ public class Service implements Runnable {
             String msg = handle.handle(data);
             if (msg != null) sendData(msg);
         } else if (command.equals(TProtocol.DATA)) {
-            String msg = handle.handle(command.substring(command.indexOf(' ') + 1));
+            String msg = handle.handle(request.substring(request.indexOf(' ') + 1));
             if (msg != null)
                 sendData(msg);
         } else if (command.equals(TProtocol.LOGOUT)) {

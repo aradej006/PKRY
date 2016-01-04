@@ -25,7 +25,7 @@ public class ManagementModule {
     public String Login(String login){
             if(dbModule.checkLogin(login)>0)
                 return generateIndexes(dbModule.checkLogin(login));
-        return  null;
+        return  "ERROR";
     }
 
 
@@ -33,7 +33,7 @@ public class ManagementModule {
             if(dbModule.checkPassword(login, password, passwordIndexes))
                 return generateIndexes(11); //skoro pesel to raczej 11 na stałe wpisujemy, chyba że ma być to w jakimś pliku config czy cuś
 
-        return null;
+        return "ERROR";
 
     }
 
@@ -58,12 +58,12 @@ public class ManagementModule {
         int indexCount=0;
         int index;
         while(indexCount <=2 || indexCount >= 5) {
-            indexCount = rand.nextInt(11)+1;
+            indexCount = rand.nextInt(passwordLength);
         }
 
         while(list.size() < indexCount){
 
-            index = rand.nextInt(11)+1;
+            index = rand.nextInt(passwordLength);
             if(!list.contains(index)){
                 list.add(index);
             }
