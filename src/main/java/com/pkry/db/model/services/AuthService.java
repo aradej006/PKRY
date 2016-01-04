@@ -1,18 +1,23 @@
 package com.pkry.db.model.services;
 
+import com.pkry.db.model.AES;
+import com.pkry.db.model.DbKey;
 import com.pkry.db.model.repositories.AuthRepository;
 import com.pkry.db.model.entities.Account;
 import com.pkry.db.model.entities.Address;
 import com.pkry.db.model.entities.Auth;
 import com.pkry.db.model.entities.Owner;
+import org.apache.commons.lang.RandomStringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by arade on 29-Dec-15.
@@ -23,6 +28,9 @@ public class AuthService {
 
     @Inject
     AuthRepository authRepository;
+
+    @Inject
+    AES aes;
 
     @PostConstruct
     public void init() {
@@ -65,7 +73,12 @@ public class AuthService {
             auth.setAccount(account);
             account.setAuth(auth);
 
+
+
             authRepository.save(auth);
+
+            encrypt(auth);
+
         }
         if (authRepository.findAll().size() == 1) {
             Address address = new Address();
@@ -114,6 +127,14 @@ public class AuthService {
 
     public List<Auth> getAuthByAccount_Number(String accountNumber){
         return authRepository.findByAccount_Number(accountNumber);
+    }
+
+    private Auth encrypt(Auth auth){
+        Auth encrypt = new Auth();
+        DbKey key = aes.getKey(auth.getLogin());
+        encrypt.setPassword(AES.encrypt(key, auth.getPassword()));
+        encrypt.setLogin(AES.encrypt(key, auth.getLogin()));
+        return encrypt;
     }
 
 }

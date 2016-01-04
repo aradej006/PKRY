@@ -1,8 +1,8 @@
 package com.pkry.user;
 
-import com.pkry.db.DbModule;
+import com.pkry.db.model.AES;
 import com.pkry.db.model.DTOs.AccountDTO;
-import com.pkry.db.model.services.AuthService;
+import com.pkry.user.server.Handle;
 import com.pkry.user.server.Server;
 
 import javax.annotation.PostConstruct;
@@ -24,6 +24,9 @@ public class ServerModule {
 
     Server server;
 
+    @Inject
+    HandleClient handleClient;
+
     @PostConstruct
     public void init() {
 
@@ -42,9 +45,15 @@ public class ServerModule {
 //        test();
         System.out.println("KONIEC");
 
-        server = new Server(7000, new HandleClient());
+        handleClient.toString();
+
+        server = new Server(7000, handleClient);
+
+        clientLogin("Adrian");
 
     }
+
+
 
     @PreDestroy
     public void destroy(){
