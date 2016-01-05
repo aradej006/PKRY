@@ -34,7 +34,7 @@ public class ManagementModule {
     public String Login(String login) {
         if (dbModule.checkLogin(login) > 0)
             return generateIndexes(dbModule.checkLogin(login));
-        return "ERROR";
+        return "ERROR BAD LOGIN";
     }
 
     /**
@@ -48,7 +48,7 @@ public class ManagementModule {
     public String insertPassword(String login, String password, String passwordIndexes) {
         if (dbModule.checkPassword(login, password, passwordIndexes))
             return generateIndexes(11);
-        return "ERROR";
+        return "ERROR BAD PASSWORD";
 
     }
 
@@ -67,7 +67,7 @@ public class ManagementModule {
     }
 
 
-    public AccountDTO getAccountDTO(String sessionId, String login){
+    public AccountDTO getAccountDTO(String sessionId, String login) throws Exception{
         return dbModule.getAccount(sessionId, login);
     }
 
@@ -80,7 +80,7 @@ public class ManagementModule {
      * @return if the transfer is possible and has been done returns <i>MONEY OK</i> info
      */
     public String doTransfer(String login, String sessionId, double money, String toAccount) {
-        String message = dbModule.checkMoney(login,sessionId, money);
+        String message = dbModule.checkMoney(login, sessionId, money);
         if (message.equals("MONEY OK"))
             return dbModule.doTransfer(login, money, toAccount);
         return message;
@@ -97,7 +97,8 @@ public class ManagementModule {
         List<Integer> list = new ArrayList<Integer>();
         int indexCount = 0;
         int index;
-        while (indexCount <= 2 || indexCount >= 5) {
+        int max = passwordLength - 3 < 4 ? 4 : passwordLength - 3;
+        while (indexCount <= 2 || indexCount >= max) {
             indexCount = rand.nextInt(passwordLength) + 1;
         }
         while (list.size() < indexCount) {
@@ -123,7 +124,7 @@ public class ManagementModule {
         return dbModule.logout(login, sessionId);
     }
 
-    public List<Transfer> getHistory(String login, String sessionId){
+    public List<Transfer> getHistory(String login, String sessionId) throws Exception {
         return dbModule.getHistory(login, sessionId);
     }
 }

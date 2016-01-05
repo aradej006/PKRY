@@ -55,11 +55,11 @@ public class UserModule{
     }
 
 
-    public AccountDTO getAccount(String sessionId, String login){
+    public AccountDTO getAccount(String sessionId, String login) throws Exception{
         return managementModule.getAccountDTO(sessionId, login);
     }
 
-    public List<Transfer> getHistory(String login, String sessionId){
+    public List<Transfer> getHistory(String login, String sessionId) throws Exception{
         return managementModule.getHistory(login,sessionId);
     }
 

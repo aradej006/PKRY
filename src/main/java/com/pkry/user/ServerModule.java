@@ -110,7 +110,11 @@ public class ServerModule {
         System.out.println("AD");
         sessionId = handleAD("AD" + ' ' + login + " " + "Rad" + " " + passwordIndexes + " 000" + " " + ADIndexes);
         System.out.println("GET_ACCOUNT");
-        accountDTO = userModule.getAccount(sessionId, login);
+        try {
+            accountDTO = userModule.getAccount(sessionId, login);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println("DoTRANSFER");
         transfer = handleClientMessage("DoTransfer" + " " + login + " " + sessionId +  " " + "1000" + " 00000000000000000000000000");
         logout = handleClientMessage("Logout" + " " + login + " " + sessionId);

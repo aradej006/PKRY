@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Named
 @ApplicationScoped
@@ -68,7 +69,7 @@ public class DbModule {
         if (checkPassword(login, password, passwordIndexes)) {
             for (int i = 0; i < adIndex.length; i++) {
                 if (auth.getAccount().getOwner().getPesel().charAt(Integer.parseInt(adIndex[i]) - 1) != ad.charAt(i))
-                    return "INCORRECT_AD";
+                    return "ERROR INCORRECT_AD";
             }
 
             AuthSession authSession = new AuthSession();
@@ -83,30 +84,34 @@ public class DbModule {
             authService.update(auth);
             return authSession.getSessionId();
         } else {
-            return "INCORRECT_AD";
+            return "ERROR INCORRECT_AD";
         }
 
     }
 
-    public AccountDTO getAccount(String sessionId, String login) {
+    public AccountDTO getAccount(String sessionId, String login) throws Exception {
         Auth auth = authService.getAuthByAuthSessionId(login, sessionId);
         updateSession(auth);
+        if (!auth.getNewestSession().isUp())
+            throw new Exception("ERROR SESSION EXPIRED");
+
         return Translator.toDTO(auth.getAccount());
+
     }
 
     public String checkMoney(String login, String sessionId, double money) {
         Auth auth = authService.getAuthByLogin(login).get(0);
         if (!auth.getNewestSession().getSessionId().equals(sessionId)) {
-            return "BED SESSION";
+            return "ERROR BAD SESSION";
         }
         if (updateSession(auth).equals("ACTIVE")) {
             if (Double.parseDouble(auth.getAccount().getBalance()) >= money) {
                 return "MONEY OK";
             } else {
-                return "LACK OF MONEY";
+                return "ERROR LACK OF MONEY";
             }
         } else {
-            return "SESSION EXPIRED";
+            return "ERROR SESSION EXPIRED";
         }
     }
 
@@ -115,8 +120,8 @@ public class DbModule {
             Auth authFrom = authService.getAuthByLogin(login).get(0);
             Auth authTo = authService.getAuthByAccount_Number(accountNumber);
             if (updateSession(authFrom).equals("ACTIVE")) {
-                authFrom.getAccount().setBalance( String.format("%.2f",Double.parseDouble(authFrom.getAccount().getBalance()) - money));
-                authTo.getAccount().setBalance( String.format("%.2f",Double.parseDouble(authTo.getAccount().getBalance()) + money));
+                authFrom.getAccount().setBalance(String.format("%.2f", Double.parseDouble(authFrom.getAccount().getBalance()) - money));
+                authTo.getAccount().setBalance(String.format("%.2f", Double.parseDouble(authTo.getAccount().getBalance()) + money));
                 // save history
                 authService.update(authFrom);
                 authService.update(authTo);
@@ -129,10 +134,10 @@ public class DbModule {
                 transferService.save(transfer);
                 return "TRANSFER DONE";
             } else {
-                return "SESSION EXPIRED";
+                return "ERROR SESSION EXPIRED";
             }
         } else {
-            return "DESTINATION NUMBER IS NOT CORRECT";
+            return "ERROR DESTINATION NUMBER IS NOT CORRECT";
         }
     }
 
@@ -153,25 +158,32 @@ public class DbModule {
             }
             auth.getNewestSession().setUp(false);
             authService.update(auth);
-            return "EXPIRED";
+            return "ERROR EXPIRED";
         }
-        return "EXPIRED";
+        return "ERROR EXPIRED";
     }
 
 
     public boolean logout(String login, String sessionId) {
         if (authService.getAuthByAuthSessionId(login, sessionId) != null) {
             Auth auth = authService.getAuthByLogin(login).get(0);
-            auth.getNewestSession().setUp(false);
-            authService.update(auth);
-            return true;
+            if (auth.getNewestSession().isUp()) {
+                auth.getNewestSession().setUp(false);
+                authService.update(auth);
+                return true;
+            } else
+                return false;
         }
         return false;
     }
 
-    public List<Transfer> getHistory(String login, String sessionId) {
+    public List<Transfer> getHistory(String login, String sessionId) throws Exception {
         if (authService.getAuthByAuthSessionId(login, sessionId) != null) {
             Auth auth = authService.getAuthByLogin(login).get(0);
+            if (!auth.getNewestSession().isUp()) {
+                throw new Exception("ERROR SESSION EXPIRED");
+            }
+
             List<Transfer> from = transferService.findByFromAccount(auth.getAccount().getNumber());
             List<Transfer> to = transferService.findByToAccount(auth.getAccount().getNumber());
             List<Transfer> all = new LinkedList<Transfer>();

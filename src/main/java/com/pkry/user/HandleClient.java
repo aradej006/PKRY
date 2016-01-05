@@ -40,28 +40,40 @@ public class HandleClient implements Handle {
 
         System.out.println(data);
 
+        String message = "ERROR";
+
+
         if (data.contains("Login")) {
-            return "PasswordIndexes " + userModule.Login(msg[1]);
+            message = "PasswordIndexes " + userModule.Login(msg[1]);
         } else if (data.contains("Password")) {
-            return "PESELIndexes " + userModule.insertPassword(msg[1], msg[2], msg[3]);
+            message = "PESELIndexes " + userModule.insertPassword(msg[1], msg[2], msg[3]);
         } else if (data.contains("PESELNumbers")) {
             System.out.println(data);
-            return "LoggedIn " + userModule.insertAD(msg[1], msg[2], msg[3], msg[4], msg[5]);
+            message = "LoggedIn " + userModule.insertAD(msg[1], msg[2], msg[3], msg[4], msg[5]);
         } else if (data.contains("DoTransfer")) {
-            return userModule.doTransfer(msg[1],msg[2], Double.parseDouble(msg[3]), msg[4]);
+            message = userModule.doTransfer(msg[1],msg[2], Double.parseDouble(msg[3]), msg[4]);
         }else if (data.contains("getaccount")){
-            return accountToString(userModule.getAccount(msg[2], msg[1]));
+            try {
+                message = accountToString(userModule.getAccount(msg[2], msg[1]));
+            } catch (Exception e) {
+                message = e.getMessage();
+            }
         }else if (data.contains("gethistory")){
-            return historyToString(userModule.getHistory(msg[1], msg [2]));
+            try {
+                message = historyToString(userModule.getHistory(msg[1], msg [2]));
+            } catch (Exception e) {
+                message = e.getMessage();
+            }
         } else if (data.contains("Logout")) {
             if (userModule.logout(msg[1], msg[2])) {
-                return "LOGOUT";
+                message = "LOGOUT";
             } else {
-                return "ERROR";
+                message = "ERROR";
             }
         }
 
-        return "ERROR";
+        System.out.println(message);
+        return message;
     }
 
     /**
@@ -71,6 +83,8 @@ public class HandleClient implements Handle {
      * @return
      */
     private String accountToString(AccountDTO accountDTO) {
+        if(accountDTO==null) return "ERROR SESSION EXPIRED";
+
         OwnerDTO owner = accountDTO.getOwnerDTO();
         return "account " + accountDTO.getBalance() + " " + accountDTO.getCurrency() + " "
                 + accountDTO.getNumber() + " " + owner.getFirstname() + " " + owner.getLastname();
