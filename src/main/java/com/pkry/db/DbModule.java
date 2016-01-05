@@ -52,10 +52,10 @@ public class DbModule {
 
     public boolean checkPassword(String login, String password, String passwordIndexes) {
         String passwd = authService.getAuthByLogin(login).get(0).getPassword();
-        String []passwdIndexes = passwordIndexes.split(",");
+        String[] passwdIndexes = passwordIndexes.split(",");
 
-        for (int i=0; i< passwdIndexes.length; i++){
-            if(password.charAt(i)!= passwd.charAt(Integer.parseInt(passwdIndexes[i])-1))
+        for (int i = 0; i < passwdIndexes.length; i++) {
+            if (password.charAt(i) != passwd.charAt(Integer.parseInt(passwdIndexes[i]) - 1))
                 return false;
         }
         return true;
@@ -63,13 +63,13 @@ public class DbModule {
 
     public String checkAD(String login, String password, String passwordIndexes, String ad, String adIndexes) {
         Auth auth = authService.getAuthByLogin(login).get(0);
-        String []adIndex = adIndexes.split(",");
+        String[] adIndex = adIndexes.split(",");
 
-        if(checkPassword(login, password, passwordIndexes)) {
-            for(int i=0; i< adIndex.length; i++){
-                if(auth.getAccount().getOwner().getPesel().charAt(Integer.parseInt(adIndex[i])-1) !=ad.charAt(i) )
+        if (checkPassword(login, password, passwordIndexes)) {
+            for (int i = 0; i < adIndex.length; i++) {
+                if (auth.getAccount().getOwner().getPesel().charAt(Integer.parseInt(adIndex[i]) - 1) != ad.charAt(i))
                     return "INCORRECT_AD";
-        }
+            }
 
             AuthSession authSession = new AuthSession();
             Date date = new Date(System.currentTimeMillis());
@@ -94,9 +94,9 @@ public class DbModule {
         return Translator.toDTO(auth.getAccount());
     }
 
-    public String checkMoney(String login,String sessionId,  double money) {
+    public String checkMoney(String login, String sessionId, double money) {
         Auth auth = authService.getAuthByLogin(login).get(0);
-        if( !auth.getNewestSession().getSessionId().equals(sessionId)){
+        if (!auth.getNewestSession().getSessionId().equals(sessionId)) {
             return "BED SESSION";
         }
         if (updateSession(auth).equals("ACTIVE")) {
@@ -115,8 +115,8 @@ public class DbModule {
             Auth authFrom = authService.getAuthByLogin(login).get(0);
             Auth authTo = authService.getAuthByAccount_Number(accountNumber);
             if (updateSession(authFrom).equals("ACTIVE")) {
-                authFrom.getAccount().setBalance((Double.parseDouble(authFrom.getAccount().getBalance()) - money) + "");
-                authTo.getAccount().setBalance((Double.parseDouble(authTo.getAccount().getBalance()) + money) + "");
+                authFrom.getAccount().setBalance( String.format("%.2f",Double.parseDouble(authFrom.getAccount().getBalance()) - money));
+                authTo.getAccount().setBalance( String.format("%.2f",Double.parseDouble(authTo.getAccount().getBalance()) + money));
                 // save history
                 authService.update(authFrom);
                 authService.update(authTo);
@@ -138,7 +138,7 @@ public class DbModule {
 
     private String updateSession(Auth auth) {
         boolean isup = auth.getNewestSession().isUp();
-        if(auth.getNewestSession().isUp()){
+        if (auth.getNewestSession().isUp()) {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss.sss");
             Date d1 = new Date(auth.getNewestSession().getUpdateTime().getTime());
 
@@ -160,7 +160,7 @@ public class DbModule {
 
 
     public boolean logout(String login, String sessionId) {
-        if( authService.getAuthByAuthSessionId(login, sessionId) != null) {
+        if (authService.getAuthByAuthSessionId(login, sessionId) != null) {
             Auth auth = authService.getAuthByLogin(login).get(0);
             auth.getNewestSession().setUp(false);
             authService.update(auth);
@@ -169,18 +169,18 @@ public class DbModule {
         return false;
     }
 
-    public List<Transfer> getHistory(String login, String sessionId){
-        if( authService.getAuthByAuthSessionId(login, sessionId) != null) {
+    public List<Transfer> getHistory(String login, String sessionId) {
+        if (authService.getAuthByAuthSessionId(login, sessionId) != null) {
             Auth auth = authService.getAuthByLogin(login).get(0);
             List<Transfer> from = transferService.findByFromAccount(auth.getAccount().getNumber());
             List<Transfer> to = transferService.findByToAccount(auth.getAccount().getNumber());
             List<Transfer> all = new LinkedList<Transfer>();
-            if(from != null && !from.isEmpty()){
+            if (from != null && !from.isEmpty()) {
                 for (Transfer transfer : from) {
                     all.add(transfer);
                 }
             }
-            if(to != null && !to.isEmpty()){
+            if (to != null && !to.isEmpty()) {
                 for (Transfer transfer : to) {
                     all.add(transfer);
                 }
