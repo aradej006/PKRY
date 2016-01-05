@@ -13,7 +13,7 @@ public class Account {
     @GeneratedValue
     Long id;
 
-    Double balance;
+    String balance;
 
     String currency;
 
@@ -49,11 +49,11 @@ public class Account {
         this.id = id;
     }
 
-    public Double getBalance() {
+    public String getBalance() {
         return balance;
     }
 
-    public void setBalance(Double balance) {
+    public void setBalance(String balance) {
         this.balance = balance;
     }
 

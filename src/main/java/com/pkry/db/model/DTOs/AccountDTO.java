@@ -5,13 +5,15 @@ package com.pkry.db.model.DTOs;
  */
 public class AccountDTO {
 
-    Double balance;
+    String balance;
 
     String currency;
 
     String number;
 
     AuthDTO authDTO;
+
+    OwnerDTO ownerDTO;
 
     public OwnerDTO getOwnerDTO() {
         return ownerDTO;
@@ -45,16 +47,11 @@ public class AccountDTO {
         this.currency = currency;
     }
 
-    public Double getBalance() {
+    public String getBalance() {
         return balance;
     }
 
-    public void setBalance(Double balance) {
+    public void setBalance(String balance) {
         this.balance = balance;
     }
-
-    OwnerDTO ownerDTO
-
-            ;
-
 }

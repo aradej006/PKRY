@@ -2,11 +2,8 @@ package com.pkry.db.model.services;
 
 import com.pkry.db.model.AES;
 import com.pkry.db.model.DbKey;
+import com.pkry.db.model.entities.*;
 import com.pkry.db.model.repositories.AuthRepository;
-import com.pkry.db.model.entities.Account;
-import com.pkry.db.model.entities.Address;
-import com.pkry.db.model.entities.Auth;
-import com.pkry.db.model.entities.Owner;
 import org.apache.commons.lang.RandomStringUtils;
 
 import javax.annotation.PostConstruct;
@@ -16,6 +13,7 @@ import javax.inject.Named;
 import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,11 +56,11 @@ public class AuthService {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            owner.setPesel("32095545624");
+            owner.setPesel("00000000000");
 
             Account account = new Account();
             account.setCurrency("PLN");
-            account.setBalance(4343.23);
+            account.setBalance("4343.23");
             account.setNumber("12345678912345678912345678");
             account.setOwner(owner);
             owner.setAccount(account);
@@ -73,11 +71,8 @@ public class AuthService {
             auth.setAccount(account);
             account.setAuth(auth);
 
-
-
-            authRepository.save(auth);
-
-            encrypt(auth);
+            Auth encrypt = encrypt(auth, true);
+            authRepository.save(encrypt);
 
         }
         if (authRepository.findAll().size() == 1) {
@@ -97,11 +92,11 @@ public class AuthService {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            owner.setPesel("78788513465");
+            owner.setPesel("11111111111");
 
             Account account = new Account();
             account.setCurrency("PLN");
-            account.setBalance(8947569.5);
+            account.setBalance("8947569.5");
             account.setNumber("00000000000000000000000000");
             account.setOwner(owner);
             owner.setAccount(account);
@@ -112,29 +107,118 @@ public class AuthService {
             auth.setAccount(account);
             account.setAuth(auth);
 
-            authRepository.save(auth);
+            Auth encrypt = encrypt(auth, true);
+            authRepository.save(encrypt);
         }
 
     }
 
     public List<Auth> getAuthByLogin(String login) {
-        return authRepository.findByLogin(login);
+        List<Auth> result = new LinkedList<Auth>();
+        DbKey key = aes.getKey(login);
+        String encLogin = aes.encrypt(key, login);
+        for (Auth auth : authRepository.findByLogin(encLogin)) {
+            result.add(decrypt(auth, login));
+        }
+        return result;
     }
 
     public void save(Auth auth){
-        authRepository.save(auth);
+        authRepository.save(encrypt(auth, true));
+    }
+
+    public void update(Auth auth){
+        System.out.println("UPDATE");
+        DbKey key = aes.getKey(auth.getLogin());
+        String encLogin = aes.encrypt(key, auth.getLogin());
+        Auth a = authRepository.findByLogin(encLogin).get(0);
+        authRepository.delete(a);
+
+        Auth update = encrypt(auth, false);
+        authRepository.save(update);
+
     }
 
     public List<Auth> getAuthByAccount_Number(String accountNumber){
         return authRepository.findByAccount_Number(accountNumber);
     }
 
-    private Auth encrypt(Auth auth){
+    private Auth encrypt(Auth auth,boolean withIDs){
         Auth encrypt = new Auth();
         DbKey key = aes.getKey(auth.getLogin());
-        encrypt.setPassword(AES.encrypt(key, auth.getPassword()));
-        encrypt.setLogin(AES.encrypt(key, auth.getLogin()));
+        encrypt.setPassword(aes.encrypt(key, auth.getPassword()));
+        encrypt.setLogin(aes.encrypt(key, auth.getLogin()));
+        if(withIDs) encrypt.setId(auth.getId());
+
+        Account account = new Account();
+        account.setCurrency(aes.encrypt(key, auth.getAccount().getCurrency()));
+        account.setBalance(aes.encrypt(key, auth.getAccount().getBalance()));
+        account.setNumber(aes.encrypt(key, auth.getAccount().getNumber()));
+        if(withIDs) account.setId(auth.getAccount().getId());
+        encrypt.setAccount(account);
+        account.setAuth(encrypt);
+
+        Owner owner = new Owner();
+        owner.setPesel(aes.encrypt(key, auth.getAccount().getOwner().getPesel()));
+        owner.setFirstname(aes.encrypt(key, auth.getAccount().getOwner().getFirstname()));
+        owner.setLastname(aes.encrypt(key, auth.getAccount().getOwner().getLastname()));
+        owner.setBirthDate(auth.getAccount().getOwner().getBirthDate());
+        if(withIDs) owner.setId(auth.getAccount().getOwner().getId());
+        owner.setAccount(account);
+        account.setOwner(owner);
+
+        Address address = new Address();
+        address.setBuildingNumber(aes.encrypt(key, auth.getAccount().getOwner().getAddress().getBuildingNumber()));
+        address.setCity(aes.encrypt(key, auth.getAccount().getOwner().getAddress().getCity()));
+        address.setFlatNumber(aes.encrypt(key, auth.getAccount().getOwner().getAddress().getFlatNumber()));
+        address.setStreet(aes.encrypt(key, auth.getAccount().getOwner().getAddress().getStreet()));
+        address.setPostCode(aes.encrypt(key, auth.getAccount().getOwner().getAddress().getPostCode()));
+        if(withIDs) address.setId(auth.getAccount().getOwner().getAddress().getId());
+        address.setOwner(owner);
+        owner.setAddress(address);
+
+        encrypt.setAuthSessionList(auth.getAuthSessionList());
+
         return encrypt;
+    }
+
+    private Auth decrypt(Auth auth, String login){
+        Auth decrypt = new Auth();
+        DbKey key = aes.getKey(login);
+        decrypt.setPassword(aes.decrypt(key, auth.getPassword()));
+        decrypt.setLogin(aes.decrypt(key, auth.getLogin()));
+        decrypt.setId(auth.getId());
+
+        Account account = new Account();
+        account.setCurrency(aes.decrypt(key, auth.getAccount().getCurrency()));
+        account.setBalance(aes.decrypt(key, auth.getAccount().getBalance()));
+        account.setNumber(aes.decrypt(key, auth.getAccount().getNumber()));
+        account.setId(auth.getAccount().getId());
+        decrypt.setAccount(account);
+        account.setAuth(decrypt);
+
+        Owner owner = new Owner();
+        owner.setPesel(aes.decrypt(key, auth.getAccount().getOwner().getPesel()));
+        owner.setFirstname(aes.decrypt(key, auth.getAccount().getOwner().getFirstname()));
+        owner.setLastname(aes.decrypt(key, auth.getAccount().getOwner().getLastname()));
+        owner.setBirthDate(auth.getAccount().getOwner().getBirthDate());
+        owner.setId(auth.getAccount().getOwner().getId());
+        owner.setAccount(account);
+        account.setOwner(owner);
+
+        Address address = new Address();
+        address.setBuildingNumber(aes.decrypt(key, auth.getAccount().getOwner().getAddress().getBuildingNumber()));
+        address.setCity(aes.decrypt(key, auth.getAccount().getOwner().getAddress().getCity()));
+        address.setFlatNumber(aes.decrypt(key, auth.getAccount().getOwner().getAddress().getFlatNumber()));
+        address.setStreet(aes.decrypt(key, auth.getAccount().getOwner().getAddress().getStreet()));
+        address.setPostCode(aes.decrypt(key, auth.getAccount().getOwner().getAddress().getPostCode()));
+        address.setId(auth.getAccount().getOwner().getAddress().getId());
+        address.setOwner(owner);
+        owner.setAddress(address);
+
+        decrypt.setAuthSessionList(auth.getAuthSessionList());
+
+        return decrypt;
     }
 
 }

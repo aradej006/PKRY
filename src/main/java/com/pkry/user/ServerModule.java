@@ -19,39 +19,20 @@ public class ServerModule {
     @Inject
     UserModule userModule;
 
-    private Key publicKey;
-    private Key privateKey;
-
     @Inject
     Server server;
 
-    @Inject
-    HandleClient handleClient;
-
     @PostConstruct
     public void init() {
-
-        KeyPairGenerator keyPairGenerator = null;
-        try {
-            keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(1024);
-            KeyPair keyPair = keyPairGenerator.genKeyPair();
-            publicKey = keyPair.getPublic();
-            privateKey = keyPair.getPrivate();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
 
         System.out.println("WorkingSERVER");
 //        test();
         System.out.println("KONIEC");
 
-        handleClient.toString();
-
         server.setPort(7000);
-        if( !server.isRunning()) server.start();
+        if (!server.isRunning()) server.start();
 
-        clientLogin("Adrian");
+//        userModule.Login("Adrian");
 
     }
 
@@ -60,17 +41,6 @@ public class ServerModule {
     @PreDestroy
     public void destroy(){
         server.close();
-    }
-
-    public String doHash(String data) throws NoSuchAlgorithmException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hash = digest.digest(data.getBytes());
-
-        return hash.toString();
-    }
-
-    public Key getPublicKey() {
-        return publicKey;
     }
 
     public String clientLogin(String login) {
@@ -95,9 +65,7 @@ public class ServerModule {
 
     public String handleClientMessage(String data){
         String message = null;
-        if (data.contains("GetPublicKey")) {
-            message = getPublicKey().toString();
-        } else if (data.contains("Login")) {
+        if (data.contains("Login")) {
             String[] array = data.split(" ");
             message = clientLogin(array[1]);
         } else if (data.contains("Password")) {

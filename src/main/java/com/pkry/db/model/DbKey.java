@@ -1,22 +1,22 @@
 package com.pkry.db.model;
 
+import javax.crypto.SecretKey;
+
 /**
  * Created by arade on 04-Jan-16.
  */
 public class DbKey {
 
     private String login;
-    private String key;
-    private String initVector;
+    private SecretKey key;
 
     public DbKey(String login) {
         this.login = login;
     }
 
-    public DbKey(String login, String key, String initVector) {
+    public DbKey(String login, SecretKey key) {
         this.login = login;
         this.key = key;
-        this.initVector = initVector;
     }
 
     public String getLogin() {
@@ -27,20 +27,12 @@ public class DbKey {
         this.login = login;
     }
 
-    public String getKey() {
+    public SecretKey getKey() {
         return key;
     }
 
-    public void setKey(String key) {
+    public void setKey(SecretKey key) {
         this.key = key;
-    }
-
-    public String getInitVector() {
-        return initVector;
-    }
-
-    public void setInitVector(String initVector) {
-        this.initVector = initVector;
     }
 
     @Override

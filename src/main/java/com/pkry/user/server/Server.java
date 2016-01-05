@@ -230,13 +230,15 @@ public class Server implements Runnable {
      */
     public void close() {
         send(TProtocol.STOP);
-        while (clients.size() != 0) {
+        int cnt = 0;
+        while (clients.size() != 0 || cnt < 10) {
             try {
                 Thread.sleep(50);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            cnt++;
         }
         running = false;
         try {

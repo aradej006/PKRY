@@ -89,7 +89,7 @@ public class DbModule {
             authSession.setSessionId("asda2dadw23dsadw2e");
             authSession.setAuth(auth);
             auth.addAuthSession(authSession);
-            authService.save(auth);
+            authService.update(auth);
             return true;
         } else {
             return false;
@@ -104,7 +104,7 @@ public class DbModule {
     public String checkMoney(String login, double money) {
         Auth auth = authService.getAuthByLogin(login).get(0);
         if (updateSession(auth).equals("ACTIVE")) {
-            if (auth.getAccount().getBalance() >= money) {
+            if (Double.parseDouble(auth.getAccount().getBalance()) >= money) {
                 return "MONEY OK";
             } else {
                 return "LACK OF MONEY";
@@ -119,7 +119,7 @@ public class DbModule {
             Auth authFrom = authService.getAuthByLogin(login).get(0);
             Auth authTo = authService.getAuthByAccount_Number(accountNumber).get(0);
             if (updateSession(authFrom).equals("ACTIVE")) {
-                authFrom.getAccount().setBalance(authFrom.getAccount().getBalance() - money);
+                authFrom.getAccount().setBalance((Double.parseDouble(authFrom.getAccount().getBalance()) - money) + "");
                 authTo.getAccount().setBalance(authTo.getAccount().getBalance() + money);
                 // save history
                 Transfer transfer = new Transfer();
