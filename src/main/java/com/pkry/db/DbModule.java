@@ -64,6 +64,13 @@ public class DbModule {
         return true;
     }
 
+
+    public String getAccount1(String login, String password, String passwordIndexes, String ad, String adIndexes){
+        Auth auth = authService.getAuthByLogin(login).get(0);
+        return auth.getAccount().getCurrency();
+
+    }
+
     public boolean checkAD(String login, String password, String passwordIndexes, String ad, String adIndexes) {
         Auth auth = authService.getAuthByLogin(login).get(0);
         String []adIndex = adIndexes.split(",");

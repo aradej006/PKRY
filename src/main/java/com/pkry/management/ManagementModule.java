@@ -64,6 +64,7 @@ public class ManagementModule {
     return null;
     }
 
+
     /**
      * executes the client's request to do a money transfer. checks if the money transfer is possible
      * @param login login of the user

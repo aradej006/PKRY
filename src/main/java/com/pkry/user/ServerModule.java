@@ -51,7 +51,11 @@ public class ServerModule {
         return userModule.insertPassword(login, password, passwordIndexes);
     }
 
-    public AccountDTO clientAD(String login, String password, String passwordIndexes, String AD, String ADIndexes) {
+//    public AccountDTO clientAD(String login, String password, String passwordIndexes, String AD, String ADIndexes) {
+//        return userModule.insertAD(login, password, passwordIndexes, AD, ADIndexes);
+//    }
+
+    public String clientAD(String login, String password, String passwordIndexes, String AD, String ADIndexes) {
         return userModule.insertAD(login, password, passwordIndexes, AD, ADIndexes);
     }
 
@@ -73,7 +77,7 @@ public class ServerModule {
             message = clientPassword(array[1], array[2], array[3]);
         } else if (data.contains("AD")) {
             String[] array = data.split(" ");
-            AccountDTO accountDTO = clientAD(array[1], array[2], array[3], array[4], array[5]);
+//            AccountDTO accountDTO = clientAD(array[1], array[2], array[3], array[4], array[5]);
         } else if (data.contains("DoTransfer")) {
             String[] array = data.split(" ");
 
@@ -96,7 +100,7 @@ public class ServerModule {
         AccountDTO accountDTO = null;
         if (data.contains("AD")) {
             String[] array = data.split(" ");
-            accountDTO = clientAD(array[1], array[2], array[3], array[4], array[5]);
+//            accountDTO = clientAD(array[1], array[2], array[3], array[4], array[5]);
         }
         return accountDTO;
     }

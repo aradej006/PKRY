@@ -52,6 +52,7 @@ public class UserModule{
         return managementModule.insertAD(login, password, passwordIndexes, AD, ADIndexes);
     }
 
+
     /**
      * requests a money transfer
      * @param login login of the user who wants to make a money transfer
