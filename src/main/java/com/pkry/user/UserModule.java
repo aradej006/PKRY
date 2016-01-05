@@ -48,8 +48,13 @@ public class UserModule{
      * @param ADIndexes requested indexes of the AD
      * @return information about the client's account obtained from Management Module
      */
-    public AccountDTO insertAD(String login,String password, String passwordIndexes, String AD, String ADIndexes){
+    public String insertAD(String login,String password, String passwordIndexes, String AD, String ADIndexes){
         return managementModule.insertAD(login, password, passwordIndexes, AD, ADIndexes);
+    }
+
+
+    public AccountDTO getAccount(String sessionId, String login){
+        return managementModule.getAccountDTO(sessionId, login);
     }
 
 
@@ -60,8 +65,8 @@ public class UserModule{
      * @param toAccount destination account
      * @return information weather of not the transfer has been done
      */
-    public String doTransfer(String login, Double money, String toAccount){
-        return managementModule.doTransfer(login,money, toAccount);
+    public String doTransfer(String login,String sessionId, Double money, String toAccount){
+        return managementModule.doTransfer(login,sessionId,money, toAccount);
     }
 
     /**
@@ -69,7 +74,7 @@ public class UserModule{
      * @param login loging of user who whats to logout
      * @return returns true if logout was correct
      */
-    public boolean logout(String login){
-        return managementModule.logout(login);
+    public boolean logout(String login, String sessionId){
+        return managementModule.logout(login, sessionId);
     }
 }

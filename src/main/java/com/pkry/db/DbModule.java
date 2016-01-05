@@ -9,6 +9,8 @@ import com.pkry.db.model.entities.Transfer;
 import com.pkry.db.model.repositories.TransferRepo;
 import com.pkry.db.model.services.AuthService;
 import com.pkry.db.model.services.TransferService;
+import com.pkry.db.model.translators.Translator;
+import org.apache.commons.lang.RandomStringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -52,64 +54,49 @@ public class DbModule {
         String []passwdIndexes = passwordIndexes.split(",");
 
         for (int i=0; i< passwdIndexes.length; i++){
-            if(password.charAt(i)!= passwd.charAt(Integer.parseInt(passwdIndexes[i])))
+            if(password.charAt(i)!= passwd.charAt(Integer.parseInt(passwdIndexes[i])-1))
                 return false;
         }
-//
-//        for (int i = 0; i < passwordIndexes.length(); i++) {
-//            if (passwd.charAt(Integer.parseInt("" + passwordIndexes.charAt(i))) != password.charAt(i)) {
-//                return false;
-//            }
-//        }
         return true;
     }
 
-
-    public String getAccount1(String login, String password, String passwordIndexes, String ad, String adIndexes){
-        Auth auth = authService.getAuthByLogin(login).get(0);
-        return auth.getAccount().getCurrency();
-
-    }
-
-    public boolean checkAD(String login, String password, String passwordIndexes, String ad, String adIndexes) {
+    public String checkAD(String login, String password, String passwordIndexes, String ad, String adIndexes) {
         Auth auth = authService.getAuthByLogin(login).get(0);
         String []adIndex = adIndexes.split(",");
 
         if(checkPassword(login, password, passwordIndexes)) {
             for(int i=0; i< adIndex.length; i++){
-                if(auth.getAccount().getOwner().getPesel().charAt(Integer.parseInt(adIndex[i])) !=ad.charAt(i) )
-                    return false;
+                if(auth.getAccount().getOwner().getPesel().charAt(Integer.parseInt(adIndex[i])-1) !=ad.charAt(i) )
+                    return "INCORRECT_AD";
         }
 
-//        if (checkPassword(login, password, passwordIndexes)) {
-//            for (int i = 0; i < adIndexes.length(); i++) {
-//                if (auth.getAccount().getOwner().getPesel().charAt(Integer.parseInt("" + adIndexes.charAt(i))) != ad.charAt(i)) {
-//                    return false;
-//                }
-//            }
             AuthSession authSession = new AuthSession();
             Date date = new Date(System.currentTimeMillis());
             authSession.setUp(true);
             authSession.setUpdateTime(date);
             authSession.setStartTime(date);
             authSession.setMaxSessionTime(1000);
-            authSession.setSessionId("asda2dadw23dsadw2e");
+            authSession.setSessionId(RandomStringUtils.randomAlphanumeric(32));
             authSession.setAuth(auth);
             auth.addAuthSession(authSession);
             authService.update(auth);
-            return true;
+            return authSession.getSessionId();
         } else {
-            return false;
+            return "INCORRECT_AD";
         }
 
     }
 
-    public AccountDTO getAccount(String login, String password, String passwordIndexes, String ad, String adIndexes) {
-        return new AccountDTO();
+    public AccountDTO getAccount(String sessionId, String login) {
+        Auth auth = authService.getAuthByAuthSessionId(login, sessionId);
+        return Translator.toDTO(auth.getAccount());
     }
 
-    public String checkMoney(String login, double money) {
+    public String checkMoney(String login,String sessionId,  double money) {
         Auth auth = authService.getAuthByLogin(login).get(0);
+        if( !auth.getNewestSession().getSessionId().equals(sessionId)){
+            return "BED SESSION";
+        }
         if (updateSession(auth).equals("ACTIVE")) {
             if (Double.parseDouble(auth.getAccount().getBalance()) >= money) {
                 return "MONEY OK";
@@ -157,7 +144,7 @@ public class DbModule {
 
 
             if (cal.getTime().after(new Date(System.currentTimeMillis()))) {
-                authService.save(auth);
+                authService.update(auth);
                 return "ACTIVE";
             }
             auth.getNewestSession().setUp(false);
@@ -167,9 +154,13 @@ public class DbModule {
     }
 
 
-    public boolean logout(String login) {
-        Auth auth = authService.getAuthByLogin(login).get(0);
-        auth.getNewestSession().setUp(false);
-        return true;
+    public boolean logout(String login, String sessionId) {
+        if( authService.getAuthByAuthSessionId(login, sessionId) != null) {
+            Auth auth = authService.getAuthByLogin(login).get(0);
+            auth.getNewestSession().setUp(false);
+            authService.update(auth);
+            return true;
+        }
+        return false;
     }
 }

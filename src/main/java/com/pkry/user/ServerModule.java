@@ -1,8 +1,6 @@
 package com.pkry.user;
 
-import com.pkry.db.model.AES;
 import com.pkry.db.model.DTOs.AccountDTO;
-import com.pkry.user.server.Handle;
 import com.pkry.user.server.Server;
 
 import javax.annotation.PostConstruct;
@@ -10,7 +8,6 @@ import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
-import java.security.*;
 
 @Startup
 @Singleton
@@ -31,15 +28,10 @@ public class ServerModule {
 
         server.setPort(7000);
         if (!server.isRunning()) server.start();
-
-//        userModule.Login("Adrian");
-
     }
 
-
-
     @PreDestroy
-    public void destroy(){
+    public void destroy() {
         server.close();
     }
 
@@ -51,23 +43,19 @@ public class ServerModule {
         return userModule.insertPassword(login, password, passwordIndexes);
     }
 
-//    public AccountDTO clientAD(String login, String password, String passwordIndexes, String AD, String ADIndexes) {
-//        return userModule.insertAD(login, password, passwordIndexes, AD, ADIndexes);
-//    }
-
     public String clientAD(String login, String password, String passwordIndexes, String AD, String ADIndexes) {
         return userModule.insertAD(login, password, passwordIndexes, AD, ADIndexes);
     }
 
-    public String clientDoTransfer(String login, Double money, String toAccount) {
-        return userModule.doTransfer(login, money, toAccount);
+    public String clientDoTransfer(String login,String sessionId, Double money, String toAccount) {
+        return userModule.doTransfer(login, sessionId, money, toAccount);
     }
 
-    public boolean clientLogout(String login){
-        return userModule.logout(login);
+    public boolean clientLogout(String login, String sessionId) {
+        return userModule.logout(login, sessionId);
     }
 
-    public String handleClientMessage(String data){
+    public String handleClientMessage(String data) {
         String message = null;
         if (data.contains("Login")) {
             String[] array = data.split(" ");
@@ -77,30 +65,27 @@ public class ServerModule {
             message = clientPassword(array[1], array[2], array[3]);
         } else if (data.contains("AD")) {
             String[] array = data.split(" ");
-//            AccountDTO accountDTO = clientAD(array[1], array[2], array[3], array[4], array[5]);
+            String accountDTO = clientAD(array[1], array[2], array[3], array[4], array[5]);
         } else if (data.contains("DoTransfer")) {
             String[] array = data.split(" ");
 
-            message = clientDoTransfer(array[1], Double.parseDouble(array[2]), array[3]);
-        }
-
-        else if(data.contains("Logout")){
+            message = clientDoTransfer(array[1],array[2], Double.parseDouble(array[3]), array[4]);
+        } else if (data.contains("Logout")) {
             String[] array = data.split(" ");
-            if(clientLogout(array[1])) {
+            if (clientLogout(array[1], array[2])) {
                 message = "LogoutOK";
-            }
-            else {
+            } else {
                 message = "LogoutFalse";
             }
         }
         return message;
     }
 
-    public AccountDTO handleAD(String data) {
-        AccountDTO accountDTO = null;
+    public String handleAD(String data) {
+        String accountDTO = null;
         if (data.contains("AD")) {
             String[] array = data.split(" ");
-//            accountDTO = clientAD(array[1], array[2], array[3], array[4], array[5]);
+            accountDTO = clientAD(array[1], array[2], array[3], array[4], array[5]);
         }
         return accountDTO;
     }
@@ -113,14 +98,22 @@ public class ServerModule {
         String transfer = null;
         String logout = null;
         String login = "Adrian";
+        String sessionId = null;
         AccountDTO accountDTO = null;
 
-        publicKey = handleClientMessage("GetPublicKey");
+        System.out.println("LOGIN");
         passwordIndexes = handleClientMessage("Login" + " " + login);
+        passwordIndexes = "1,2,3";
+        System.out.println("PASSWORD");
         ADIndexes = handleClientMessage("Password" + " " + login + " " + "ade" + " " + passwordIndexes);
-        accountDTO = handleAD("AD" + ' ' + login + " " + "ade" + " " + passwordIndexes +  " 209" + " " + ADIndexes);
-        transfer = handleClientMessage("DoTransfer" + " " + login + " " + "2" + " 00000000000000000000000000");
-        logout = handleClientMessage("Logout" + " " + login);
+        ADIndexes = "1,2,3";
+        System.out.println("AD");
+        sessionId = handleAD("AD" + ' ' + login + " " + "Rad" + " " + passwordIndexes + " 000" + " " + ADIndexes);
+        System.out.println("GET_ACCOUNT");
+        accountDTO = userModule.getAccount(sessionId, login);
+        System.out.println("DoTRANSFER");
+        transfer = handleClientMessage("DoTransfer" + " " + login + " " + sessionId +  " " + "2" + " 00000000000000000000000000");
+        logout = handleClientMessage("Logout" + " " + login + " " + sessionId);
         System.out.println(transfer);
         System.out.println(logout);
     }

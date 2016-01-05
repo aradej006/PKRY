@@ -4,6 +4,7 @@ import com.pkry.db.model.AES;
 import com.pkry.db.model.DbKey;
 import com.pkry.db.model.entities.*;
 import com.pkry.db.model.repositories.AuthRepository;
+import com.pkry.db.model.repositories.AuthSessionRepository;
 import org.apache.commons.lang.RandomStringUtils;
 
 import javax.annotation.PostConstruct;
@@ -28,11 +29,15 @@ public class AuthService {
     AuthRepository authRepository;
 
     @Inject
+    AuthSessionRepository authSessionRepository;
+
+    @Inject
     AES aes;
 
     @PostConstruct
     public void init() {
         authRepository.toString();
+        authSessionRepository.toString();
     }
 
     public void initAuthDAO() {
@@ -127,6 +132,12 @@ public class AuthService {
         authRepository.save(encrypt(auth, true));
     }
 
+    public Auth getAuthByAuthSessionId(String login, String sessionId){
+        Auth auth = authSessionRepository.findBySessionId(sessionId).get(0).getAuth();
+        return decrypt(auth, login);
+    }
+
+
     public void update(Auth auth){
         System.out.println("UPDATE");
         DbKey key = aes.getKey(auth.getLogin());
@@ -134,7 +145,45 @@ public class AuthService {
         Auth a = authRepository.findByLogin(encLogin).get(0);
         authRepository.delete(a);
 
-        Auth update = encrypt(auth, false);
+        Auth update = new Auth();
+        update.setPassword(aes.encrypt(key, auth.getPassword()));
+        update.setLogin(aes.encrypt(key, auth.getLogin()));
+
+        Account account = new Account();
+        account.setCurrency(aes.encrypt(key, auth.getAccount().getCurrency()));
+        account.setBalance(aes.encrypt(key, auth.getAccount().getBalance()));
+        account.setNumber(auth.getAccount().getNumber());
+        update.setAccount(account);
+        account.setAuth(update);
+
+        Owner owner = new Owner();
+        owner.setPesel(aes.encrypt(key, auth.getAccount().getOwner().getPesel()));
+        owner.setFirstname(aes.encrypt(key, auth.getAccount().getOwner().getFirstname()));
+        owner.setLastname(aes.encrypt(key, auth.getAccount().getOwner().getLastname()));
+        owner.setBirthDate(auth.getAccount().getOwner().getBirthDate());
+        owner.setAccount(account);
+        account.setOwner(owner);
+
+        Address address = new Address();
+        address.setBuildingNumber(aes.encrypt(key, auth.getAccount().getOwner().getAddress().getBuildingNumber()));
+        address.setCity(aes.encrypt(key, auth.getAccount().getOwner().getAddress().getCity()));
+        address.setFlatNumber(aes.encrypt(key, auth.getAccount().getOwner().getAddress().getFlatNumber()));
+        address.setStreet(aes.encrypt(key, auth.getAccount().getOwner().getAddress().getStreet()));
+        address.setPostCode(aes.encrypt(key, auth.getAccount().getOwner().getAddress().getPostCode()));
+        address.setOwner(owner);
+        owner.setAddress(address);
+
+        for (AuthSession authSession : auth.getAuthSessionList()) {
+            AuthSession authSession1 = new AuthSession();
+            authSession1.setUp(authSession.isUp());
+            authSession1.setSessionId(authSession.getSessionId());
+            authSession1.setMaxSessionTime(authSession.getMaxSessionTime());
+            authSession1.setStartTime(authSession.getStartTime());
+            authSession1.setUpdateTime(authSession.getUpdateTime());
+            authSession1.setAuth(update);
+            update.addAuthSession(authSession1);
+        }
+
         authRepository.save(update);
 
     }
@@ -153,7 +202,7 @@ public class AuthService {
         Account account = new Account();
         account.setCurrency(aes.encrypt(key, auth.getAccount().getCurrency()));
         account.setBalance(aes.encrypt(key, auth.getAccount().getBalance()));
-        account.setNumber(aes.encrypt(key, auth.getAccount().getNumber()));
+        account.setNumber(auth.getAccount().getNumber());
         if(withIDs) account.setId(auth.getAccount().getId());
         encrypt.setAccount(account);
         account.setAuth(encrypt);
@@ -192,7 +241,7 @@ public class AuthService {
         Account account = new Account();
         account.setCurrency(aes.decrypt(key, auth.getAccount().getCurrency()));
         account.setBalance(aes.decrypt(key, auth.getAccount().getBalance()));
-        account.setNumber(aes.decrypt(key, auth.getAccount().getNumber()));
+        account.setNumber(auth.getAccount().getNumber());
         account.setId(auth.getAccount().getId());
         decrypt.setAccount(account);
         account.setAuth(decrypt);
