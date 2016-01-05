@@ -7,20 +7,57 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
+/**
+ * service for a client
+ */
 public class Service implements Runnable {
-
+    /**
+     * Network client socket
+     */
     private SSLSocket sslSocket;
+    /**
+     * Says whether or not the server is running
+     */
     private boolean running;
+
+    /**
+     * Interpretation of server in this server application.
+     */
     private Server server;
+
+    /**
+     * Service identifier.
+     */
     private int id;
+
+    /**
+     * Input stream for receiving data.
+     */
     private BufferedReader input;
+
+    /**
+     * Output stream for receiving data.
+     */
     private PrintWriter output;
+
+    /**
+     * Handle object
+     */
     private Handle handle;
 
+    /**
+     * Creates new service
+     */
     private Service() {
         running = false;
     }
 
+    /**
+     * Creates new service
+     * @param socket  Client socket on server.
+     * @param server server
+     * @param handle handle object
+     */
     public Service(SSLSocket socket, Server server, Handle handle) {
         this();
 
@@ -31,15 +68,26 @@ public class Service implements Runnable {
         System.out.println("Service " + id + " created");
     }
 
+    /**
+     * determinate wheather or not the server is running
+     * @return <i>true</i> when server is running
+     */
     public boolean isRunning() {
         return running;
     }
 
+    /**
+     * Creates input and output stream
+     * @throws IOException When input, output stream cannot be created.
+     */
     public void init() throws IOException {
         input = new BufferedReader(new InputStreamReader(sslSocket.getInputStream()));
         output = new PrintWriter(sslSocket.getOutputStream(), true);
     }
 
+    /**
+     * Closes all streams and deletes network socket.
+     */
     public void close() {
         try {
             output.close();
@@ -55,14 +103,25 @@ public class Service implements Runnable {
 
     }
 
+    /**
+     * Sends <i>command</i>
+     * @param command Information to send.
+     */
     public void send(String command) {
         output.println(command);
     }
 
+    /**
+     * Sends data to client
+     * @param data data to send
+     */
     public void sendData(String data) {
         send(TProtocol.DATA + " " + data);
     }
 
+    /**
+     * Method which services client.
+     */
     public String receive() {
         String message;
         try {
@@ -74,6 +133,10 @@ public class Service implements Runnable {
         return message;
     }
 
+    /**
+     * Function handles commands got from request
+     * @param request request to handle
+     */
     private void handleCommand(String request) {
         StringTokenizer st = new StringTokenizer(request);
         String command = st.nextToken();
@@ -95,11 +158,13 @@ public class Service implements Runnable {
         } else if (command.equals(TProtocol.STOPPED)) {
             running = false;
         } else if (command.equals(TProtocol.NULLCOMMAND)) {
-            sendData("siema");
             running = false;
         }
     }
 
+    /**
+     * Method which services client.
+     */
     public void run() {
         while (running) {
             handleCommand(receive());

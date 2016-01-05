@@ -15,23 +15,58 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Monika on 1/3/2016.
+ * Server
  */
 @Singleton
 public class Server implements Runnable {
 
+
+    /**
+     * List of clients
+     */
     private List<Service> clients;
+
+    /**
+     * Says whether or not the server is running
+     */
     private volatile boolean running;
+
+    /**
+     * last ID info
+     */
     private int _lastID;
+
+    /**
+     * Server Internet address.
+     */
     private InetAddress inetAddress;
+
+    /**
+     * port to run the server at
+     */
     private int port;
+
+    /**
+     * Backlog information
+     */
     private int backlog;
+
+    /**
+     * A server network socket
+     */
     private SSLServerSocket serverSocket;
 
+    /**
+     * Injected object of handleClass
+     */
     @Inject
     HandleClient handleClient;
     Handle handle;
 
+
+    /**
+     * Creates a server
+     */
     private Server() {
         clients = new LinkedList<Service>();
         running = false;
@@ -72,10 +107,17 @@ public class Server implements Runnable {
         return port;
     }
 
+    /**
+     * Sets port on which the server is meant to run
+     * @param port port for the server
+     */
     public void setPort(int port) {
         this.port = port;
     }
 
+    /**
+     * Starts the server
+     */
     public void start(){
         setInetAddress();
         if (setServer()) {
@@ -85,6 +127,9 @@ public class Server implements Runnable {
         System.out.println("ServerApp created (" + getInetAdress() + ":" + port + ")");
     }
 
+    /**
+     * Sets Internet address from user network.
+     */
     private void setInetAddress() {
         try {
             inetAddress = InetAddress.getLocalHost();
@@ -94,14 +139,25 @@ public class Server implements Runnable {
         }
     }
 
+    /**
+     * Gets Internet address
+     * @return Internet address.
+     */
     public String getInetAdress() {
         return serverSocket.getInetAddress().toString();
     }
 
+    /**
+     * determinate wheather of not the server is running
+     * @return <i>true</i> when server is running
+     */
     public boolean isRunning() {
         return running;
     }
 
+    /**
+     * runs the server
+     */
     public void run() {
         try {
             serverSocket.setSoTimeout(500);
@@ -120,7 +176,11 @@ public class Server implements Runnable {
 
 
     }
-
+    /**
+     * Adds new client to the server
+     * @param clientService service for a client
+     * @throws IOException service cannot be started
+     */
     synchronized void addClientService(Service clientService) throws IOException {
         clientService.init();
         clients.add(clientService);
@@ -128,12 +188,20 @@ public class Server implements Runnable {
         System.out.println("ServerApp added new client service");
     }
 
+    /**
+     * Removes client from the server
+     * @param clientService client to remove from the server
+     */
     synchronized void removeClientService(Service clientService) {
         clients.remove(clientService);
         clientService.close();
         System.out.println("ServerApp removed new client service");
     }
 
+    /**
+     * Sends a message to clients
+     * @param msg message to send
+     */
     synchronized void send(String msg) {
         for (Service s : clients)
             s.send(msg);
@@ -141,14 +209,25 @@ public class Server implements Runnable {
         System.out.println("ServerApp sent to all services : " + msg);
     }
 
+    /**
+     * Gets next client ID
+     * @return ID of next client
+     */
     synchronized int nextID() {
         return ++_lastID;
     }
 
+    /**
+     * Sends data to client
+     * @param data data to send
+     */
     public void sendData(String data) {
         send(TProtocol.DATA + " " + data);
     }
 
+    /**
+     * Closes the server
+     */
     public void close() {
         send(TProtocol.STOP);
         while (clients.size() != 0) {
@@ -167,6 +246,10 @@ public class Server implements Runnable {
         }
     }
 
+    /**
+     * Sets a server
+     * @return <i>true</i> if the server was set
+     */
     private boolean setServer() {
         try {
             SSLServerSocketFactory sslServerSocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();

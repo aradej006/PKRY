@@ -49,22 +49,37 @@ public class DbModule {
 
     public boolean checkPassword(String login, String password, String passwordIndexes) {
         String passwd = authService.getAuthByLogin(login).get(0).getPassword();
-        for (int i = 0; i < passwordIndexes.length(); i++) {
-            if (passwd.charAt(Integer.parseInt("" + passwordIndexes.charAt(i))) != password.charAt(i)) {
+        String []passwdIndexes = passwordIndexes.split(",");
+
+        for (int i=0; i< passwdIndexes.length; i++){
+            if(password.charAt(i)!= passwd.charAt(Integer.parseInt(passwdIndexes[i])))
                 return false;
-            }
         }
+//
+//        for (int i = 0; i < passwordIndexes.length(); i++) {
+//            if (passwd.charAt(Integer.parseInt("" + passwordIndexes.charAt(i))) != password.charAt(i)) {
+//                return false;
+//            }
+//        }
         return true;
     }
 
     public boolean checkAD(String login, String password, String passwordIndexes, String ad, String adIndexes) {
         Auth auth = authService.getAuthByLogin(login).get(0);
-        if (checkPassword(login, password, passwordIndexes)) {
-            for (int i = 0; i < adIndexes.length(); i++) {
-                if (auth.getAccount().getOwner().getPesel().charAt(Integer.parseInt("" + adIndexes.charAt(i))) != ad.charAt(i)) {
+        String []adIndex = adIndexes.split(",");
+
+        if(checkPassword(login, password, passwordIndexes)) {
+            for(int i=0; i< adIndex.length; i++){
+                if(auth.getAccount().getOwner().getPesel().charAt(Integer.parseInt(adIndex[i])) !=ad.charAt(i) )
                     return false;
-                }
-            }
+        }
+
+//        if (checkPassword(login, password, passwordIndexes)) {
+//            for (int i = 0; i < adIndexes.length(); i++) {
+//                if (auth.getAccount().getOwner().getPesel().charAt(Integer.parseInt("" + adIndexes.charAt(i))) != ad.charAt(i)) {
+//                    return false;
+//                }
+//            }
             AuthSession authSession = new AuthSession();
             Date date = new Date(System.currentTimeMillis());
             authSession.setUp(true);

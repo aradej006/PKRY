@@ -9,12 +9,15 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Created by arade on 04-Jan-16.
+ * Class handles requests from the user
  */
 @Named
 @ApplicationScoped
 public class HandleClient implements Handle{
 
+    /**
+     * Injected object of UserModule class
+     */
     @Inject
     UserModule userModule;
 
@@ -23,6 +26,11 @@ public class HandleClient implements Handle{
         System.out.println("USERMODULE " + userModule.toString());
     }
 
+    /**
+     * function handles messages got from the user
+     * @param data message
+     * @return if the request is correct returns some piece of data, otherwise an error message
+     */
     public String handle(String data) {
         String [] msg = data.split(" ");
 
@@ -44,21 +52,22 @@ public class HandleClient implements Handle{
             return userModule.doTransfer(msg[1], Double.parseDouble(msg[2]), msg[3]);
         }
         else if(data.contains("Logout")){
+
             if(userModule.logout(msg[1])){
-                return "SUCCEED";
+                return "LOGOUT";
             }else{
                 return "ERROR";
             }
         }
 
         return "ERROR";
-
-//
-//
-//        System.out.println("RECIEVED "+ data);
-//        return "YUPI";
     }
 
+    /**
+     * Converts object of type AccountDTO to string to send to the client
+     * @param accountDTO
+     * @return
+     */
     private String AccountToString(AccountDTO accountDTO) {
 //        return "LoggedIn " + accountDTO.getBalance().toString() + " " + accountDTO.getCurrency()
 //                + " " + accountDTO.getOwnerDTO().toString();

@@ -1,13 +1,48 @@
 package com.pkry.user.server;
 
+/**
+ * Protocol Commands
+ */
 public class TProtocol {
-	static final String LOGIN = "login";
+    /**
+     * Command LOGIN.
+     */
+    static final String LOGIN = "login";
+
+    /**
+     * Command LOGGEDIN.
+     */
     static final String LOGGEDIN = "loggedin";
+
+    /**
+     * Command LOGOUT.
+     */
     static final String LOGOUT = "logout";
-	static final String DATA = "data";
+
+    /**
+     * Command DATA .
+     */
+    static final String DATA = "data";
+
+    /**
+     * Command LOGGEDOUT.
+     */
     static final String LOGGEDOUT = "loggedout";
+
+    /**
+     * Command STOP.
+     */
     static final String STOP = "stop";
+
+    /**
+     * Command STOPPED.
+     */
     static final String STOPPED = "stopped";
+
+    /**
+     * Command NULLCOMMAND.
+     */
     static final String NULLCOMMAND = "nullcommand";
+
 
 }

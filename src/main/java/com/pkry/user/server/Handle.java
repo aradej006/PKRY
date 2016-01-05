@@ -1,8 +1,13 @@
 package com.pkry.user.server;
 
 /**
- * Created by Monika on 1/4/2016.
+ * Handle interface
  */
 public interface Handle {
+    /**
+     * Abstract function to handle messages from client
+     * @param data message
+     * @return return message to client
+     */
     String handle(String data);
 }
