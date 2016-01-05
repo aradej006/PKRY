@@ -32,6 +32,9 @@ public class TransferService {
         return  transferRepo.findByFromAccount(fromAccount);
     }
 
+    public List<Transfer> findByToAccount(String toAccount){
+        return transferRepo.findByToAccount(toAccount);
+    }
 
 
 

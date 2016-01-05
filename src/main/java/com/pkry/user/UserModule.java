@@ -1,10 +1,12 @@
 package com.pkry.user;
 import com.pkry.db.model.DTOs.AccountDTO;
+import com.pkry.db.model.entities.Transfer;
 import com.pkry.management.ManagementModule;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.List;
 
 /**
  * User Module that comunicates with Management Module
@@ -57,6 +59,9 @@ public class UserModule{
         return managementModule.getAccountDTO(sessionId, login);
     }
 
+    public List<Transfer> getHistory(String login, String sessionId){
+        return managementModule.getHistory(login,sessionId);
+    }
 
     /**
      * requests a money transfer

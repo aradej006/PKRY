@@ -2,12 +2,14 @@ package com.pkry.user;
 
 import com.pkry.db.model.DTOs.AccountDTO;
 import com.pkry.db.model.DTOs.OwnerDTO;
+import com.pkry.db.model.entities.Transfer;
 import com.pkry.user.server.Handle;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.List;
 
 /**
  * Class handles requests from the user
@@ -49,6 +51,8 @@ public class HandleClient implements Handle {
             return userModule.doTransfer(msg[1],msg[2], Double.parseDouble(msg[3]), msg[4]);
         }else if (data.contains("getaccount")){
             return accountToString(userModule.getAccount(msg[2], msg[1]));
+        }else if (data.contains("gethistory")){
+            return historyToString(userModule.getHistory(msg[1], msg [2]));
         } else if (data.contains("Logout")) {
             if (userModule.logout(msg[1], msg[2])) {
                 return "LOGOUT";
@@ -70,5 +74,21 @@ public class HandleClient implements Handle {
         OwnerDTO owner = accountDTO.getOwnerDTO();
         return "account " + accountDTO.getBalance() + " " + accountDTO.getCurrency() + " "
                 + accountDTO.getNumber() + " " + owner.getFirstname() + " " + owner.getLastname();
+    }
+
+    private String historyToString(List<Transfer> history){
+        StringBuilder transfers = new StringBuilder();
+        transfers.append("history");
+        if(history!=null && !history.isEmpty()){
+            for (Transfer transfer : history) {
+                transfers.append(" ");
+                transfers.append(transfer.getAmount()).append(" ");
+                transfers.append(transfer.getCurrency()).append(" ");
+                transfers.append(transfer.getFromAccount()).append(" ");
+                transfers.append(transfer.getToAccount()).append(" ");
+                transfers.append(transfer.getTransferDate().getTime());
+            }
+        }
+        return transfers.toString();
     }
 }

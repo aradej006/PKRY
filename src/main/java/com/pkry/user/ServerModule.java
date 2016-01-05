@@ -105,14 +105,14 @@ public class ServerModule {
         passwordIndexes = handleClientMessage("Login" + " " + login);
         passwordIndexes = "1,2,3";
         System.out.println("PASSWORD");
-        ADIndexes = handleClientMessage("Password" + " " + login + " " + "ade" + " " + passwordIndexes);
+        ADIndexes = handleClientMessage("Password" + " " + login + " " + "Rad" + " " + passwordIndexes);
         ADIndexes = "1,2,3";
         System.out.println("AD");
         sessionId = handleAD("AD" + ' ' + login + " " + "Rad" + " " + passwordIndexes + " 000" + " " + ADIndexes);
         System.out.println("GET_ACCOUNT");
         accountDTO = userModule.getAccount(sessionId, login);
         System.out.println("DoTRANSFER");
-        transfer = handleClientMessage("DoTransfer" + " " + login + " " + sessionId +  " " + "2" + " 00000000000000000000000000");
+        transfer = handleClientMessage("DoTransfer" + " " + login + " " + sessionId +  " " + "1000" + " 00000000000000000000000000");
         logout = handleClientMessage("Logout" + " " + login + " " + sessionId);
         System.out.println(transfer);
         System.out.println(logout);

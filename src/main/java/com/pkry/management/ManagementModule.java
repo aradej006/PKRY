@@ -2,6 +2,7 @@ package com.pkry.management;
 
 import com.pkry.db.DbModule;
 import com.pkry.db.model.DTOs.AccountDTO;
+import com.pkry.db.model.entities.Transfer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -120,6 +121,10 @@ public class ManagementModule {
      */
     public boolean logout(String login, String sessionId) {
         return dbModule.logout(login, sessionId);
+    }
+
+    public List<Transfer> getHistory(String login, String sessionId){
+        return dbModule.getHistory(login, sessionId);
     }
 }
 

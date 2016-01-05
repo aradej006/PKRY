@@ -13,5 +13,6 @@ import java.util.List;
 public interface TransferRepo extends JpaRepository<Transfer, Long>{
 
     List<Transfer> findByFromAccount(String fromAccount);
+    List<Transfer> findByToAccount(String toAccount);
 
 }

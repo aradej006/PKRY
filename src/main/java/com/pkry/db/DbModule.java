@@ -20,6 +20,7 @@ import javax.inject.Named;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @Named
@@ -110,13 +111,15 @@ public class DbModule {
     }
 
     public String doTransfer(String login, double money, String accountNumber) {
-        if (authService.getAuthByAccount_Number(accountNumber).size() > 0) {
+        if (authService.getAuthByAccount_Number(accountNumber) != null) {
             Auth authFrom = authService.getAuthByLogin(login).get(0);
-            Auth authTo = authService.getAuthByAccount_Number(accountNumber).get(0);
+            Auth authTo = authService.getAuthByAccount_Number(accountNumber);
             if (updateSession(authFrom).equals("ACTIVE")) {
                 authFrom.getAccount().setBalance((Double.parseDouble(authFrom.getAccount().getBalance()) - money) + "");
-                authTo.getAccount().setBalance(authTo.getAccount().getBalance() + money);
+                authTo.getAccount().setBalance((Double.parseDouble(authTo.getAccount().getBalance()) + money) + "");
                 // save history
+                authService.update(authFrom);
+                authService.update(authTo);
                 Transfer transfer = new Transfer();
                 transfer.setFromAccount(authFrom.getAccount().getNumber());
                 transfer.setToAccount(authTo.getAccount().getNumber());
@@ -129,7 +132,7 @@ public class DbModule {
                 return "SESSION EXPIRED";
             }
         } else {
-            return "DESTINATION NUBER IS NOT CORRECT";
+            return "DESTINATION NUMBER IS NOT CORRECT";
         }
     }
 
@@ -164,5 +167,26 @@ public class DbModule {
             return true;
         }
         return false;
+    }
+
+    public List<Transfer> getHistory(String login, String sessionId){
+        if( authService.getAuthByAuthSessionId(login, sessionId) != null) {
+            Auth auth = authService.getAuthByLogin(login).get(0);
+            List<Transfer> from = transferService.findByFromAccount(auth.getAccount().getNumber());
+            List<Transfer> to = transferService.findByToAccount(auth.getAccount().getNumber());
+            List<Transfer> all = new LinkedList<Transfer>();
+            if(from != null && !from.isEmpty()){
+                for (Transfer transfer : from) {
+                    all.add(transfer);
+                }
+            }
+            if(to != null && !to.isEmpty()){
+                for (Transfer transfer : to) {
+                    all.add(transfer);
+                }
+            }
+            return all;
+        }
+        return null;
     }
 }

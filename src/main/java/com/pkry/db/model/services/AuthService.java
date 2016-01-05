@@ -120,9 +120,7 @@ public class AuthService {
 
     public List<Auth> getAuthByLogin(String login) {
         List<Auth> result = new LinkedList<Auth>();
-        DbKey key = aes.getKey(login);
-        String encLogin = aes.encrypt(key, login);
-        for (Auth auth : authRepository.findByLogin(encLogin)) {
+        for (Auth auth : authRepository.findByLogin(login)) {
             result.add(decrypt(auth, login));
         }
         return result;
@@ -141,13 +139,12 @@ public class AuthService {
     public void update(Auth auth){
         System.out.println("UPDATE");
         DbKey key = aes.getKey(auth.getLogin());
-        String encLogin = aes.encrypt(key, auth.getLogin());
-        Auth a = authRepository.findByLogin(encLogin).get(0);
+        Auth a = authRepository.findByLogin(auth.getLogin()).get(0);
         authRepository.delete(a);
 
         Auth update = new Auth();
         update.setPassword(aes.encrypt(key, auth.getPassword()));
-        update.setLogin(aes.encrypt(key, auth.getLogin()));
+        update.setLogin(auth.getLogin());
 
         Account account = new Account();
         account.setCurrency(aes.encrypt(key, auth.getAccount().getCurrency()));
@@ -172,31 +169,34 @@ public class AuthService {
         address.setPostCode(aes.encrypt(key, auth.getAccount().getOwner().getAddress().getPostCode()));
         address.setOwner(owner);
         owner.setAddress(address);
-
-        for (AuthSession authSession : auth.getAuthSessionList()) {
-            AuthSession authSession1 = new AuthSession();
-            authSession1.setUp(authSession.isUp());
-            authSession1.setSessionId(authSession.getSessionId());
-            authSession1.setMaxSessionTime(authSession.getMaxSessionTime());
-            authSession1.setStartTime(authSession.getStartTime());
-            authSession1.setUpdateTime(authSession.getUpdateTime());
-            authSession1.setAuth(update);
-            update.addAuthSession(authSession1);
+        if(auth.getAuthSessionList()!=null){
+            for (AuthSession authSession : auth.getAuthSessionList()) {
+                AuthSession authSession1 = new AuthSession();
+                authSession1.setUp(authSession.isUp());
+                authSession1.setSessionId(authSession.getSessionId());
+                authSession1.setMaxSessionTime(authSession.getMaxSessionTime());
+                authSession1.setStartTime(authSession.getStartTime());
+                authSession1.setUpdateTime(authSession.getUpdateTime());
+                authSession1.setAuth(update);
+                update.addAuthSession(authSession1);
+            }
         }
 
         authRepository.save(update);
 
     }
 
-    public List<Auth> getAuthByAccount_Number(String accountNumber){
-        return authRepository.findByAccount_Number(accountNumber);
+    public Auth getAuthByAccount_Number(String accountNumber){
+        if( authRepository.findByAccount_Number(accountNumber).size() == 0) return null;
+        Auth auth = authRepository.findByAccount_Number(accountNumber).get(0);
+        return decrypt(auth, auth.getLogin());
     }
 
     private Auth encrypt(Auth auth,boolean withIDs){
         Auth encrypt = new Auth();
         DbKey key = aes.getKey(auth.getLogin());
         encrypt.setPassword(aes.encrypt(key, auth.getPassword()));
-        encrypt.setLogin(aes.encrypt(key, auth.getLogin()));
+        encrypt.setLogin(auth.getLogin());
         if(withIDs) encrypt.setId(auth.getId());
 
         Account account = new Account();
@@ -235,7 +235,7 @@ public class AuthService {
         Auth decrypt = new Auth();
         DbKey key = aes.getKey(login);
         decrypt.setPassword(aes.decrypt(key, auth.getPassword()));
-        decrypt.setLogin(aes.decrypt(key, auth.getLogin()));
+        decrypt.setLogin(auth.getLogin());
         decrypt.setId(auth.getId());
 
         Account account = new Account();
