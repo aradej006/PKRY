@@ -108,7 +108,6 @@ public class ManagementModule {
             }
         }
         Collections.sort(list);
-//        String indexes = "1,2,3";
         String indexes = list.toString().replace("[", "").replace("]", "").replace(" ", "");
         return indexes;
     }

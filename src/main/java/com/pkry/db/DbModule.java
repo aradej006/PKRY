@@ -163,7 +163,6 @@ public class DbModule {
         return "ERROR EXPIRED";
     }
 
-
     public boolean logout(String login, String sessionId) {
         if (authService.getAuthByAuthSessionId(login, sessionId) != null) {
             Auth auth = authService.getAuthByLogin(login).get(0);

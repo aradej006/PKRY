@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Created by arade on 29-Dec-15.
  */
+
 @Repository
 public interface AuthRepository extends JpaRepository<Auth, Long> {
     List<Auth> findByLogin(String login);
