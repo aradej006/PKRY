@@ -89,6 +89,7 @@ public class DbModule {
 
     public AccountDTO getAccount(String sessionId, String login) {
         Auth auth = authService.getAuthByAuthSessionId(login, sessionId);
+        updateSession(auth);
         return Translator.toDTO(auth.getAccount());
     }
 
@@ -135,19 +136,20 @@ public class DbModule {
     private String updateSession(Auth auth) {
         boolean isup = auth.getNewestSession().isUp();
         if(auth.getNewestSession().isUp()){
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd HH:mm");
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss.sss");
             Date d1 = new Date(auth.getNewestSession().getUpdateTime().getTime());
 
             Calendar cal = Calendar.getInstance();
             cal.setTime(d1);
             cal.add(Calendar.SECOND, auth.getNewestSession().getMaxSessionTime());
-
+            auth.getNewestSession().setUpdateTime(new Date(System.currentTimeMillis()));
 
             if (cal.getTime().after(new Date(System.currentTimeMillis()))) {
                 authService.update(auth);
                 return "ACTIVE";
             }
             auth.getNewestSession().setUp(false);
+            authService.update(auth);
             return "EXPIRED";
         }
         return "EXPIRED";
