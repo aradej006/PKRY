@@ -18,7 +18,7 @@ import javax.inject.Inject;
 public class ServerModule {
 
     /**
-     * Injected object of UserModule class
+     * Injected object of UserModule class.
      */
     @Inject
     UserModule userModule;

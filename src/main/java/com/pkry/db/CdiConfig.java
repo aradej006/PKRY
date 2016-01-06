@@ -6,7 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 /**
- * Class with Cdi configuration.
+ * Class with Cdi configuration
  */
 public class CdiConfig {
 

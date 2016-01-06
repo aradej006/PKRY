@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Auth Session Repository
+ * Auth Session Repository.
  */
 @Repository
 public interface AuthSessionRepository extends JpaRepository<AuthSession, Long>{

@@ -20,7 +20,7 @@ import java.util.List;
 public class HandleClient implements Handle {
 
     /**
-     * Injected object of UserModule class
+     * Injected object of UserModule class.
      */
     @Inject
     UserModule userModule;

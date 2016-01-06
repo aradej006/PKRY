@@ -52,7 +52,7 @@ public class DbKey {
     }
 
     /**
-     * Overrided equals method that allows to determinate whether or not obtained login maches the one in the key list.
+     * Overrided equals method that allows to determinate whether or not obtained login maches the one in the key list
      * @param o object of Object class.
      * @return returns <i>true</i> if logins matches.
      */

@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Account entity keeps information about user's account - balancy, currency which they have their money in, and accounts
- * bank number.
+ * bank number
  */
 @Entity
 public class Account {

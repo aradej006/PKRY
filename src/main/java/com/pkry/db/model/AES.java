@@ -117,8 +117,8 @@ public class AES {
 
     /**
      * Searches for the key assigned for the login.
-     * @param login
-     * @return
+     * @param login user's login
+     * @return returns a key assigned to that login
      */
     private DbKey findByLogin(String login){
         for (DbKey key : keys) {

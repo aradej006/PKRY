@@ -191,7 +191,7 @@ public class DbModule {
 
     /**
      * Function is responsible for updating the session if some actions were made on Client's account.
-     * @param auth object of Auth class
+     * @param auth object of Auth class.
      * @return returns ACTIVE if update was made before session got expired, otherwise sends error message.
      */
     private String updateSession(Auth auth) {

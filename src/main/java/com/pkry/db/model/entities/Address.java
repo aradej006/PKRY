@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 /**
  * Address entity keeps information about account owner address such as street, building number, city, flat number
- * post code.
+ * post code
  */
 @Entity
 public class Address {

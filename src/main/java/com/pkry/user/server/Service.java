@@ -12,7 +12,7 @@ import java.util.StringTokenizer;
  */
 public class Service implements Runnable {
     /**
-     * Network client socket
+     * Network client socket.
      */
     private SSLSocket sslSocket;
     /**

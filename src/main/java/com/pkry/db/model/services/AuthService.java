@@ -26,7 +26,7 @@ import java.util.UUID;
 public class AuthService {
 
     /**
-     * Injected object of AuthRepository class
+     * Injected object of AuthRepository class.
      */
     @Inject
     AuthRepository authRepository;

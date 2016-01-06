@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * Transfer entity keeps all the information about the transfers: transfer date, amount of money that has been sent,
- * from which account, to which account, and in what currency the transfer was made.
+ * from which account, to which account, and in what currency the transfer was made
  *
  */
 @Entity

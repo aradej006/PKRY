@@ -34,7 +34,7 @@ public class TransferService {
 
     /**
      * Saves transfer
-     * @param transfer
+     * @param transfer transfer to save
      */
     public void save(Transfer transfer){
         transferRepo.save(transfer);

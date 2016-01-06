@@ -5,7 +5,7 @@ import java.util.Date;
 
 /**
  * AuthSession entity keeps information about one session with the user - sessionId, start up time, when the session was
- * updated for the last time, and what is the maximum time the session can last.
+ * updated for the last time, and what is the maximum time the session can last
  */
 @Entity
 public class AuthSession {

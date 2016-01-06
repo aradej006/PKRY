@@ -22,7 +22,7 @@ public class Server implements Runnable {
 
 
     /**
-     * List of clients
+     * List of clients.
      */
     private List<Service> clients;
 

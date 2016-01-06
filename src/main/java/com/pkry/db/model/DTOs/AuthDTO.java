@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * AuthDTO class.
+ * AuthDTO class
  */
 public class AuthDTO {
 

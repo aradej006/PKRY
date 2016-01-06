@@ -1,7 +1,7 @@
 package com.pkry.db.model.DTOs;
 
 /**
- * AccountDTO class.
+ * AccountDTO class
  */
 public class AccountDTO {
 

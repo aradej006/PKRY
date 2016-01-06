@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Management module class that communicates with DbModule and send informations back toUserModule
+ * Management module class that communicates with DbModule and send informations back toUserModule.
  */
 @Named
 @ApplicationScoped

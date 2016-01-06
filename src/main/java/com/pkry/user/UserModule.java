@@ -83,7 +83,7 @@ public class UserModule {
     }
 
     /**
-     * User's request to make a money transfer to someone else's account.
+     * User's request to make a money transfer to someone else's account..
      *
      * @param login     user's login.
      * @param sessionId ID of the current session.

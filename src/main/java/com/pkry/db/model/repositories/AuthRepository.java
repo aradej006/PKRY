@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Auth Repository
+ * Auth Repository.
  */
 
 @Repository
