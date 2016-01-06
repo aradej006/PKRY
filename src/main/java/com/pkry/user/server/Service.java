@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
 /**
- * service for a client
+ * Service for a client. This class is responsible for sending to and receiving messages from the client.
  */
 public class Service implements Runnable {
     /**
@@ -46,14 +46,14 @@ public class Service implements Runnable {
     private Handle handle;
 
     /**
-     * Creates new service
+     * Creates new service.
      */
     private Service() {
         running = false;
     }
 
     /**
-     * Creates new service
+     * Creates new service.
      * @param socket  Client socket on server.
      * @param server server
      * @param handle handle object
@@ -69,15 +69,16 @@ public class Service implements Runnable {
     }
 
     /**
-     * determinate wheather or not the server is running
+     * Determinate whether or not the server is running.
      * @return <i>true</i> when server is running
      */
     public boolean isRunning() {
         return running;
     }
 
+
     /**
-     * Creates input and output stream
+     * Creates input and output stream.
      * @throws IOException When input, output stream cannot be created.
      */
     public void init() throws IOException {
@@ -119,8 +120,11 @@ public class Service implements Runnable {
         send(TProtocol.DATA + " " + data);
     }
 
+
+
     /**
-     * Method which services client.
+     * Method used in order to receive messages from the client.
+     * @return received message.
      */
     public String receive() {
         String message;
@@ -134,7 +138,7 @@ public class Service implements Runnable {
     }
 
     /**
-     * Function handles commands got from request
+     * Function is responsible for handling messages received from the client.
      * @param request request to handle
      */
     private void handleCommand(String request) {
@@ -161,6 +165,8 @@ public class Service implements Runnable {
             running = false;
         }
     }
+
+
 
     /**
      * Method which services client.

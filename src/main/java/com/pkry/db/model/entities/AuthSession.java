@@ -4,7 +4,8 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * Created by arade on 29-Dec-15.
+ * AuthSession entity keeps information about one session with the user - sessionId, start up time, when the session was
+ * updated for the last time, and what is the maximum time the session can last.
  */
 @Entity
 public class AuthSession {

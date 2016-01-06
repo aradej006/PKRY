@@ -6,7 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by arade on 29-Dec-15.
+ * Auth entity keeps information about bank account, login, password, and about the sessions the user had
+ * in order to modify their bank account.
  */
 @Entity
 public class Auth {

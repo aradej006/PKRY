@@ -3,7 +3,7 @@ package com.pkry.db.model.DTOs;
 import java.util.Date;
 
 /**
- * Created by arade on 03-Jan-16.
+ * AuthSessionDTO class.
  */
 public class AuthSessionDTO {
 

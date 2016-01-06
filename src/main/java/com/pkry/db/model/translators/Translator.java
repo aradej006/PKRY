@@ -4,7 +4,7 @@ import com.pkry.db.model.DTOs.*;
 import com.pkry.db.model.entities.*;
 
 /**
- * Created by arade on 03-Jan-16.
+ * A Translator class translates DTOs to entity or other way around.
  */
 public final class Translator {
 

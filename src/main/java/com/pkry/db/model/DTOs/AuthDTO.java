@@ -3,6 +3,9 @@ package com.pkry.db.model.DTOs;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * AuthDTO class.
+ */
 public class AuthDTO {
 
     String login;

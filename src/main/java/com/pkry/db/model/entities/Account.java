@@ -4,7 +4,8 @@ import javax.persistence.*;
 import java.util.List;
 
 /**
- * Created by arade on 29-Dec-15.
+ * Account entity keeps information about user's account - balancy, currency which they have their money in, and accounts
+ * bank number.
  */
 @Entity
 public class Account {

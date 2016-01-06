@@ -6,7 +6,9 @@ import javax.persistence.Id;
 import java.util.Date;
 
 /**
- * Created by arade on 03-Jan-16.
+ * Transfer entity keeps all the information about the transfers: transfer date, amount of money that has been sent,
+ * from which account, to which account, and in what currency the transfer was made.
+ *
  */
 @Entity
 public class Transfer {

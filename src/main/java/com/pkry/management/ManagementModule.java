@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Management module class that communicates with both DbModule and UserModule
+ * Management module class that communicates with DbModule and send informations back toUserModule
  */
 @Named
 @ApplicationScoped
@@ -26,10 +26,10 @@ public class ManagementModule {
     DbModule dbModule;
 
     /**
-     * executes the correctness of inserted login
+     * Executes the correctness of inserted login.
      *
      * @param login login inserted by client
-     * @return if login exists in the base returns indexes of password to insert in next step of loging process
+     * @return if login exists in the base returns indexes of password to insert in next step of logging process
      */
     public String Login(String login) {
         if (dbModule.checkLogin(login) > 0)
@@ -38,7 +38,7 @@ public class ManagementModule {
     }
 
     /**
-     * executes the correctness of password
+     * Executes the correctness of password.
      *
      * @param login           login inserted by client
      * @param password        password inserted by client
@@ -53,31 +53,39 @@ public class ManagementModule {
     }
 
     /**
-     * executes the correctness of AD (Additional Informations)
+     * Executes the correctness of AD (Additional Informations)
      *
-     * @param login           login inserted by client
-     * @param password        password inserted by client
-     * @param passwordIndexes requested indexes of the password
-     * @param AD              AD inserted by the user
-     * @param ADIndexes       requested indexes of the AD
-     * @return if the AD matches the one in the base returns information about the client's account
+     * @param login           login inserted by client.
+     * @param password        password inserted by client.
+     * @param passwordIndexes requested indexes of the password.
+     * @param AD              AD inserted by the user.
+     * @param ADIndexes       requested indexes of the AD.
+     * @return if the AD matches the one in the base correct returns sessionId.
      */
     public String insertAD(String login, String password, String passwordIndexes, String AD, String ADIndexes) {
         return dbModule.checkAD(login, password, passwordIndexes, AD, ADIndexes);
     }
 
-
-    public AccountDTO getAccountDTO(String sessionId, String login) throws Exception{
+    /**
+     * Executes the request to obtain information about user's account.
+     *
+     * @param sessionId ID of the current session.
+     * @param login     user's login.
+     * @return user's account assigned to that login.
+     * @throws Exception if the session expired throws SESSION EXPIRED exception.
+     */
+    public AccountDTO getAccountDTO(String sessionId, String login) throws Exception {
         return dbModule.getAccount(sessionId, login);
     }
 
     /**
-     * executes the client's request to do a money transfer. checks if the money transfer is possible
+     * executes the client's request to make a money transfer. Checks if the money transfer is possible.
      *
-     * @param login     login of the user
-     * @param money     the amount of money to send
-     * @param toAccount destination account
-     * @return if the transfer is possible and has been done returns <i>MONEY OK</i> info
+     * @param login     user's login.
+     * @param sessionId ID of the current session.
+     * @param money     amount of money to send.
+     * @param toAccount number of destination account
+     * @return information whether or not the transfer has been made (if not, also sends the cause).
      */
     public String doTransfer(String login, String sessionId, double money, String toAccount) {
         String message = dbModule.checkMoney(login, sessionId, money);
@@ -87,7 +95,7 @@ public class ManagementModule {
     }
 
     /**
-     * function generates indexes of password or AD for the user to insert
+     * Function randomly generates indexes of password or AD that are requested to input by Client.
      *
      * @param passwordLength lenght of the password or AD
      * @return string containing the indexes
@@ -114,9 +122,9 @@ public class ManagementModule {
 
 
     /**
-     * executes the corectness of the request to logout from the server
+     * Wxecutes the corectness of the request to logout from the server
      *
-     * @param login login of the user who wants to log out
+     * @param login user's login.
      * @return if the logout was correct returns <i>true</i>
      */
     public boolean logout(String login, String sessionId) {

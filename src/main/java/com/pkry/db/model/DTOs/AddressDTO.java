@@ -1,7 +1,7 @@
 package com.pkry.db.model.DTOs;
 
 /**
- * Created by arade on 03-Jan-16.
+ * AdressDTO class.
  */
 public class AddressDTO {
 
