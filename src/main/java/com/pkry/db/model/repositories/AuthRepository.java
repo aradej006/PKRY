@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Created by arade on 29-Dec-15.
+ * Auth Repository.
  */
 
 @Repository

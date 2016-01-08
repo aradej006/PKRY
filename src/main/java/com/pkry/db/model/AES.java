@@ -11,15 +11,25 @@ import javax.inject.Named;
 import java.util.*;
 
 /**
- * Created by arade on 04-Jan-16.
+ * Class AES is responsible for encrypting information in data base by AES algorithm.
  */
 @Named
 @ApplicationScoped
 public class AES {
 
+    /**
+     * List of DBKey class with private keys
+     */
     List<DbKey> keys;
 
+    /**
+     * Object of Chiper class
+     */
     private Cipher cipher;
+
+    /**
+     * Object of KeyGenetator class that allows to create keys.
+     */
     private KeyGenerator keyGenerator;
 
     @PostConstruct
@@ -35,6 +45,12 @@ public class AES {
         }
     }
 
+    /**
+     * Encrypting function, that encrypts received text.
+     * @param secretKey key which is used to encrypt data.
+     * @param plainText plain text to encrypt.
+     * @return encrypted text.
+     */
     public String encrypt(DbKey secretKey, String plainText){
         if( plainText == null ) return null;
         byte[] plainTextByte = plainText.getBytes();
@@ -55,6 +71,12 @@ public class AES {
         return encoder.encodeToString(encryptedByte);
     }
 
+    /**
+     * Function decrypts received, encrypted text.
+     * @param secretKey key to use to decrypt data.
+     * @param encryptedText encrypted text to encrypt.
+     * @return plain, decrypted text.
+     */
     public String decrypt(DbKey secretKey, String encryptedText){
         if( encryptedText == null ) return null;
 
@@ -77,6 +99,12 @@ public class AES {
         return decryptedText;
     }
 
+    /**
+     * Gets the key that is assigned to the login. If there is no key assigned for the login, new one is created and
+     * then returned.
+     * @param login user's login
+     * @return secret key assigned for the login.
+     */
     public DbKey getKey(String login){
         if( keys != null && keys.contains(new DbKey(login))) return findByLogin(login);
 
@@ -87,6 +115,11 @@ public class AES {
         return key;
     }
 
+    /**
+     * Searches for the key assigned for the login.
+     * @param login user's login
+     * @return returns a key assigned to that login
+     */
     private DbKey findByLogin(String login){
         for (DbKey key : keys) {
             if(key.getLogin().equals(login))
@@ -95,6 +128,10 @@ public class AES {
         return null;
     }
 
+    /**
+     * Gets the list of keys.
+     * @return list of keys.
+     */
     public List<DbKey> getKeys(){
         return keys;
     }

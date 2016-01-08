@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Created by arade on 03-Jan-16.
+ * Transfer Repository
  */
 @Repository
 public interface TransferRepo extends JpaRepository<Transfer, Long>{

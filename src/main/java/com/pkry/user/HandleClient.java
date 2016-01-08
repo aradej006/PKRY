@@ -12,14 +12,15 @@ import javax.inject.Named;
 import java.util.List;
 
 /**
- * Class handles requests from the user
+ * HandleClient class implements Handle interface and is responsible for handling messages from the client and sends
+ * feedback to that clients with some information obtained from data base.
  */
 @Named
 @ApplicationScoped
 public class HandleClient implements Handle {
 
     /**
-     * Injected object of UserModule class
+     * Injected object of UserModule class.
      */
     @Inject
     UserModule userModule;
@@ -30,18 +31,17 @@ public class HandleClient implements Handle {
     }
 
     /**
-     * function handles messages got from the user
+     * Function from Handle interface that handles requests from client. Depending on the request sends some information
+     * to UserModule to get feedback.
      *
-     * @param data message
-     * @return if the request is correct returns some piece of data, otherwise an error message
+     * @param data message received from client's application.
+     * @return returns feedback information to the client with the requested information or information that an error
+     * occurred.
      */
     public String handle(String data) {
         String[] msg = data.split(" ");
-
         System.out.println(data);
-
         String message = "ERROR";
-
 
         if (data.contains("Login")) {
             message = "PasswordIndexes " + userModule.Login(msg[1]);
@@ -51,16 +51,16 @@ public class HandleClient implements Handle {
             System.out.println(data);
             message = "LoggedIn " + userModule.insertAD(msg[1], msg[2], msg[3], msg[4], msg[5]);
         } else if (data.contains("DoTransfer")) {
-            message = userModule.doTransfer(msg[1],msg[2], Double.parseDouble(msg[3]), msg[4]);
-        }else if (data.contains("getaccount")){
+            message = userModule.doTransfer(msg[1], msg[2], Double.parseDouble(msg[3]), msg[4]);
+        } else if (data.contains("getaccount")) {
             try {
                 message = accountToString(userModule.getAccount(msg[2], msg[1]));
             } catch (Exception e) {
                 message = e.getMessage();
             }
-        }else if (data.contains("gethistory")){
+        } else if (data.contains("gethistory")) {
             try {
-                message = historyToString(userModule.getHistory(msg[1], msg [2]));
+                message = historyToString(userModule.getHistory(msg[1], msg[2]));
             } catch (Exception e) {
                 message = e.getMessage();
             }
@@ -77,23 +77,29 @@ public class HandleClient implements Handle {
     }
 
     /**
-     * Converts object of type AccountDTO to string to send to the client
+     * Converts AccountDTO object to String object to send it to the client.
      *
-     * @param accountDTO
-     * @return
+     * @param accountDTO AccountDTO object received from UserModule.
+     * @return String object with information about the account, or error message if session expired.
      */
     private String accountToString(AccountDTO accountDTO) {
-        if(accountDTO==null) return "ERROR SESSION EXPIRED";
+        if (accountDTO == null) return "ERROR SESSION EXPIRED";
 
         OwnerDTO owner = accountDTO.getOwnerDTO();
         return "account " + accountDTO.getBalance() + " " + accountDTO.getCurrency() + " "
                 + accountDTO.getNumber() + " " + owner.getFirstname() + " " + owner.getLastname();
     }
 
-    private String historyToString(List<Transfer> history){
+    /**
+     * Converts list of transactions to String object to send it to the client.
+     *
+     * @param history list of Transfer type of previous transactions
+     * @return String object with previous transactions.
+     */
+    private String historyToString(List<Transfer> history) {
         StringBuilder transfers = new StringBuilder();
         transfers.append("history");
-        if(history!=null && !history.isEmpty()){
+        if (history != null && !history.isEmpty()) {
             for (Transfer transfer : history) {
                 transfers.append(" ");
                 transfers.append(transfer.getAmount()).append(" ");

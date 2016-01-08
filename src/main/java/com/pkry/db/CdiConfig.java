@@ -5,6 +5,9 @@ import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+/**
+ * Class with Cdi configuration
+ */
 public class CdiConfig {
 
     @Produces

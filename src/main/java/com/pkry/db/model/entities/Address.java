@@ -3,7 +3,8 @@ package com.pkry.db.model.entities;
 import javax.persistence.*;
 
 /**
- * Created by arade on 29-Dec-15.
+ * Address entity keeps information about account owner address such as street, building number, city, flat number
+ * post code
  */
 @Entity
 public class Address {

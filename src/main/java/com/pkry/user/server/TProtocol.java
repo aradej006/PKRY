@@ -1,7 +1,8 @@
 package com.pkry.user.server;
 
 /**
- * Protocol Commands
+ * Protocol commands used in Service class.
+ *
  */
 public class TProtocol {
     /**

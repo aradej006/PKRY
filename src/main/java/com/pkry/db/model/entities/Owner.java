@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * Created by arade on 29-Dec-15.
+ * Owner entity keeps all the informations about account owner, their first and last name, pesel number and birth date
  */
 @Entity
 public class Owner {

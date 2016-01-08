@@ -9,27 +9,43 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 
+/**
+ * Server Module class, that is initialised on startup. It's responsible of creating server and starting server that
+ * allows communication with the users.
+ */
 @Startup
 @Singleton
 public class ServerModule {
 
+    /**
+     * Injected object of UserModule class.
+     */
     @Inject
     UserModule userModule;
 
+    /**
+     * Injected object of Server class.
+     */
     @Inject
     Server server;
 
+    /**
+     * Function responsible for setting the correct port for the server as well as starting it.
+     */
     @PostConstruct
     public void init() {
 
         System.out.println("WorkingSERVER");
 //        test();
-        System.out.println("KONIEC");
+        //       System.out.println("KONIEC");
 
         server.setPort(7000);
         if (!server.isRunning()) server.start();
     }
 
+    /**
+     * When the instance is being destroyed function properly closes up the server.
+     */
     @PreDestroy
     public void destroy() {
         server.close();

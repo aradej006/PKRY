@@ -15,14 +15,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Server
+ * Server class responsible for adding new clients and running threads.
  */
 @Singleton
 public class Server implements Runnable {
 
 
     /**
-     * List of clients
+     * List of clients.
      */
     private List<Service> clients;
 
@@ -65,7 +65,7 @@ public class Server implements Runnable {
 
 
     /**
-     * Creates a server
+     * Creates a server and sets the keystore - repository of security certificates.
      */
     private Server() {
         clients = new LinkedList<Service>();

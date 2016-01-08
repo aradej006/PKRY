@@ -2,6 +2,9 @@ package com.pkry.db.model.DTOs;
 
 import java.util.Date;
 
+/**
+ * OwnerDTO class.
+ */
 public class OwnerDTO {
 
     String firstname;

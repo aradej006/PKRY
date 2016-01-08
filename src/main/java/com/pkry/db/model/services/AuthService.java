@@ -19,18 +19,28 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Created by arade on 29-Dec-15.
+ * Class AuthService communicates with AuthRepository and AuthSessionRepository.
  */
 @Stateless
 @Named
 public class AuthService {
 
+    /**
+     * Injected object of AuthRepository class.
+     */
     @Inject
     AuthRepository authRepository;
 
+    /**
+     * Injected object of AuthSessionRepository class
+     */
     @Inject
     AuthSessionRepository authSessionRepository;
 
+
+    /**
+     * Injected object of AES class
+     */
     @Inject
     AES aes;
 
@@ -118,6 +128,11 @@ public class AuthService {
 
     }
 
+    /**
+     * Function gets a list of auths made by user's login.
+     * @param login user's login.
+     * @return returns list of auth type.
+     */
     public List<Auth> getAuthByLogin(String login) {
         List<Auth> result = new LinkedList<Auth>();
         for (Auth auth : authRepository.findByLogin(login)) {
@@ -126,16 +141,29 @@ public class AuthService {
         return result;
     }
 
+    /**
+     * Saves auth in AuthRepository.
+     * @param auth Auth to save.
+     */
     public void save(Auth auth){
         authRepository.save(encrypt(auth, true));
     }
 
+    /**
+     * Finds the Auth based on session ID.
+     * @param login
+     * @param sessionId
+     * @return
+     */
     public Auth getAuthByAuthSessionId(String login, String sessionId){
         Auth auth = authSessionRepository.findBySessionId(sessionId).get(0).getAuth();
         return decrypt(auth, login);
     }
 
-
+    /**
+     * Updates Auth
+     * @param auth Auth to update
+     */
     public void update(Auth auth){
         System.out.println("UPDATE");
         DbKey key = aes.getKey(auth.getLogin());
@@ -186,12 +214,24 @@ public class AuthService {
 
     }
 
+
+    /**
+     * Gets Auth based on Account number.
+     * @param accountNumber account number;
+     * @return returns decrypted auth information.
+     */
     public Auth getAuthByAccount_Number(String accountNumber){
         if( authRepository.findByAccount_Number(accountNumber).size() == 0) return null;
         Auth auth = authRepository.findByAccount_Number(accountNumber).get(0);
         return decrypt(auth, auth.getLogin());
     }
 
+    /**
+     * Session encrypts Auth data. <i>withIDs</i> parameter allows to setID, if true sets, if false doesn't.
+     * @param auth Auth object to encrypt.
+     * @param withIDs determinate if sets IDs or not.
+     * @return encrypted Auth object.
+     */
     private Auth encrypt(Auth auth,boolean withIDs){
         Auth encrypt = new Auth();
         DbKey key = aes.getKey(auth.getLogin());
@@ -231,6 +271,13 @@ public class AuthService {
         return encrypt;
     }
 
+
+    /**
+     * Function decrypts received Auth data. Decryption is based on private key assigned to user's login.
+     * @param auth Auth object to encrypt.
+     * @param login user's login required to find key.
+     * @return decrypted Auth object.
+     */
     private Auth decrypt(Auth auth, String login){
         Auth decrypt = new Auth();
         DbKey key = aes.getKey(login);
