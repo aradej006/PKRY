@@ -35,6 +35,8 @@ public class ServerModule {
     @PostConstruct
     public void init() {
 
+        userModule.Login("Adrian");
+
         System.out.println("WorkingSERVER");
 //        test();
         //       System.out.println("KONIEC");
@@ -50,6 +52,7 @@ public class ServerModule {
     public void destroy() {
         server.close();
     }
+
 
 //    public String clientLogin(String login) {
 //        return userModule.Login(login);

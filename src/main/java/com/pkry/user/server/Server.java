@@ -162,6 +162,7 @@ public class Server implements Runnable {
         while (running) {
             try {
                 addClientService(new Service((SSLSocket) serverSocket.accept(), this, handle));
+            } catch (SocketTimeoutException e){
             } catch (IOException e) {
                 e.printStackTrace();
             }
