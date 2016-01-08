@@ -72,13 +72,6 @@ public class Server implements Runnable {
         running = false;
         _lastID = -1;
 
-        String path = null;
-        try {
-            path = new File(".").getCanonicalPath();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         System.setProperty("javax.net.ssl.keyStore", "mySrvKeystore");
         System.setProperty("javax.net.ssl.keyStorePassword", "123456");
 
@@ -108,7 +101,7 @@ public class Server implements Runnable {
     }
 
     /**
-     * Sets port on which the server is meant to run
+     * Sets port on which the server is meant to rur
      * @param port port for the server
      */
     public void setPort(int port) {
@@ -169,7 +162,6 @@ public class Server implements Runnable {
         while (running) {
             try {
                 addClientService(new Service((SSLSocket) serverSocket.accept(), this, handle));
-            } catch (SocketTimeoutException e) {
             } catch (IOException e) {
                 e.printStackTrace();
             }
