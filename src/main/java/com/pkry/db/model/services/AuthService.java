@@ -132,6 +132,8 @@ public class AuthService {
             Address address = new Address();
             address.setCity(Dictionary.Cities[i]);
             address.setBuildingNumber((rand.nextInt() % 200) + "");
+            address.setStreet(Dictionary.Streets[i]);
+            address.setFlatNumber((rand.nextInt() % 200) + "");
             address.setPostCode(Dictionary.Postcodes[i]);
 
             Owner owner = new Owner();
