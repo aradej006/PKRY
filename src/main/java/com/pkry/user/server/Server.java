@@ -131,12 +131,13 @@ public class Server implements Runnable {
      * Sets Internet address from user network.
      */
     private void setInetAddress() {
-        try {
-            inetAddress = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
-            System.out.println("Exception in getting InetAdress");
-            e.printStackTrace();
-        }
+//        try {
+////            inetAddress = InetAddress.getLocalHost();
+//        } catch (UnknownHostException e) {
+//            System.out.println("Exception in getting InetAdress");
+//            e.printStackTrace();
+//        }
+        inetAddress = InetAddress.getLoopbackAddress();
     }
 
     /**
