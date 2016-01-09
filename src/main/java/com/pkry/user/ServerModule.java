@@ -37,10 +37,7 @@ public class ServerModule {
 
         userModule.Login("Adrian");
 
-        System.out.println("WorkingSERVER");
-//        test();
-        //       System.out.println("KONIEC");
-
+        server.setLogging(false);
         server.setPort(7000);
         if (!server.isRunning()) server.start();
     }

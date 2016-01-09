@@ -1,11 +1,17 @@
 package com.pkry.db.model;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
+
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.Base64;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import java.util.*;
@@ -35,12 +41,14 @@ public class AES {
     @PostConstruct
     public void init(){
         try {
-            cipher = Cipher.getInstance("AES");
+            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "SunJCE");
             keyGenerator = KeyGenerator.getInstance("AES");
             keyGenerator.init(128);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
             e.printStackTrace();
         }
     }
@@ -55,8 +63,12 @@ public class AES {
         if( plainText == null ) return null;
         byte[] plainTextByte = plainText.getBytes();
         try {
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey.getKey());
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey.getKey(),new IvParameterSpec(secretKey.getIV().getBytes("UTF-8")));
         } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         byte[] encryptedByte = new byte[0];
@@ -83,8 +95,12 @@ public class AES {
         Base64.Decoder decoder = Base64.getDecoder();
         byte[] encryptedTextByte = decoder.decode(encryptedText);
         try {
-            cipher.init(Cipher.DECRYPT_MODE, secretKey.getKey());
+            cipher.init(Cipher.DECRYPT_MODE, secretKey.getKey(),new IvParameterSpec(secretKey.getIV().getBytes("UTF-8")));
         } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         byte[] decryptedByte = new byte[0];

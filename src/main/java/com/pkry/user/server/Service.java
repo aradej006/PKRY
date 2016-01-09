@@ -45,6 +45,8 @@ public class Service implements Runnable {
      */
     private Handle handle;
 
+    private boolean logging = false;
+
     /**
      * Creates new service.
      */
@@ -54,22 +56,26 @@ public class Service implements Runnable {
 
     /**
      * Creates new service.
-     * @param socket  Client socket on server.
+     *
+     * @param socket Client socket on server.
      * @param server server
      * @param handle handle object
      */
-    public Service(SSLSocket socket, Server server, Handle handle) {
+    public Service(SSLSocket socket, Server server, Handle handle, boolean logging) {
         this();
 
         running = true;
         this.sslSocket = socket;
         this.server = server;
         this.handle = handle;
-        System.out.println("Service " + id + " created");
+        this.logging = logging;
+        if (logging)
+            System.out.println("Service " + id + " created");
     }
 
     /**
      * Determinate whether or not the server is running.
+     *
      * @return <i>true</i> when server is running
      */
     public boolean isRunning() {
@@ -79,6 +85,7 @@ public class Service implements Runnable {
 
     /**
      * Creates input and output stream.
+     *
      * @throws IOException When input, output stream cannot be created.
      */
     public void init() throws IOException {
@@ -95,7 +102,8 @@ public class Service implements Runnable {
             input.close();
             sslSocket.close();
         } catch (IOException e) {
-            System.out.println("Error closing client (" + id + ").");
+            if (logging)
+                System.out.println("Error closing client (" + id + ").");
         } finally {
             output = null;
             input = null;
@@ -106,6 +114,7 @@ public class Service implements Runnable {
 
     /**
      * Sends <i>command</i>
+     *
      * @param command Information to send.
      */
     public void send(String command) {
@@ -114,6 +123,7 @@ public class Service implements Runnable {
 
     /**
      * Sends data to client
+     *
      * @param data data to send
      */
     public void sendData(String data) {
@@ -121,9 +131,9 @@ public class Service implements Runnable {
     }
 
 
-
     /**
      * Method used in order to receive messages from the client.
+     *
      * @return received message.
      */
     public String receive() {
@@ -131,7 +141,8 @@ public class Service implements Runnable {
         try {
             message = input.readLine();
         } catch (IOException e) {
-            System.out.println("Error reading client (" + id + ").");
+            if (logging)
+                System.out.println("Error reading client (" + id + ").");
             message = TProtocol.NULLCOMMAND;
         }
         return message;
@@ -139,6 +150,7 @@ public class Service implements Runnable {
 
     /**
      * Function is responsible for handling messages received from the client.
+     *
      * @param request request to handle
      */
     private void handleCommand(String request) {
@@ -165,7 +177,6 @@ public class Service implements Runnable {
             running = false;
         }
     }
-
 
 
     /**

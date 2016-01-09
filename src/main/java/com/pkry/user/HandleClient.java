@@ -27,7 +27,6 @@ public class HandleClient implements Handle {
 
     @PostConstruct
     public void init() {
-        System.out.println("USERMODULE " + userModule.toString());
     }
 
     /**
@@ -40,7 +39,7 @@ public class HandleClient implements Handle {
      */
     public String handle(String data) {
         String[] msg = data.split(" ");
-        System.out.println(data);
+//        System.out.println(data);
         String message = "ERROR";
 
         if (data.contains("Login")) {
@@ -48,7 +47,6 @@ public class HandleClient implements Handle {
         } else if (data.contains("Password")) {
             message = "PESELIndexes " + userModule.insertPassword(msg[1], msg[2], msg[3]);
         } else if (data.contains("PESELNumbers")) {
-            System.out.println(data);
             message = "LoggedIn " + userModule.insertAD(msg[1], msg[2], msg[3], msg[4], msg[5]);
         } else if (data.contains("DoTransfer")) {
             message = userModule.doTransfer(msg[1], msg[2], Double.parseDouble(msg[3]), msg[4]);
@@ -72,7 +70,7 @@ public class HandleClient implements Handle {
             }
         }
 
-        System.out.println(message);
+//        System.out.println(message);
         return message;
     }
 

@@ -1,5 +1,7 @@
 package com.pkry.db.model;
 
+import org.apache.commons.lang.RandomStringUtils;
+
 import javax.crypto.SecretKey;
 
 /**
@@ -17,6 +19,10 @@ public class DbKey {
      */
     private SecretKey key;
 
+    private String IV;
+
+
+
     /**
      * Constructor of DBKey. Creates DBKey object.
      * @param login user's login.
@@ -33,6 +39,7 @@ public class DbKey {
     public DbKey(String login, SecretKey key) {
         this.login = login;
         this.key = key;
+        IV = RandomStringUtils.randomAlphanumeric(16);
     }
 
     public String getLogin() {
@@ -49,6 +56,10 @@ public class DbKey {
 
     public void setKey(SecretKey key) {
         this.key = key;
+    }
+
+    public String getIV() {
+        return IV;
     }
 
     /**

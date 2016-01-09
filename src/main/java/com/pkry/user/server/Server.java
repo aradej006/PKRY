@@ -56,6 +56,8 @@ public class Server implements Runnable {
      */
     private SSLServerSocket serverSocket;
 
+    private boolean logging = false;
+
     /**
      * Injected object of handleClass
      */
@@ -77,14 +79,14 @@ public class Server implements Runnable {
 
     }
 
-    public Server(int port, Handle handle) {
+    public Server(int port, Handle handle, boolean logging) {
         this();
         this.port = port;
-//        this.handle = handle;
+        this.logging = logging;
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         handle = handleClient;
     }
 
@@ -102,6 +104,7 @@ public class Server implements Runnable {
 
     /**
      * Sets port on which the server is meant to rur
+     *
      * @param port port for the server
      */
     public void setPort(int port) {
@@ -111,30 +114,26 @@ public class Server implements Runnable {
     /**
      * Starts the server
      */
-    public void start(){
+    public void start() {
         setInetAddress();
         if (setServer()) {
             running = true;
             new Thread(this).start();
         }
-        System.out.println("ServerApp created (" + getInetAdress() + ":" + port + ")");
+        if (logging)
+            System.out.println("ServerApp created (" + getInetAdress() + ":" + port + ")");
     }
 
     /**
      * Sets Internet address from user network.
      */
     private void setInetAddress() {
-//        try {
-////            inetAddress = InetAddress.getLocalHost();
-//        } catch (UnknownHostException e) {
-//            System.out.println("Exception in getting InetAdress");
-//            e.printStackTrace();
-//        }
         inetAddress = InetAddress.getLoopbackAddress();
     }
 
     /**
      * Gets Internet address
+     *
      * @return Internet address.
      */
     public String getInetAdress() {
@@ -143,6 +142,7 @@ public class Server implements Runnable {
 
     /**
      * determinate wheather of not the server is running
+     *
      * @return <i>true</i> when server is running
      */
     public boolean isRunning() {
@@ -161,8 +161,8 @@ public class Server implements Runnable {
 
         while (running) {
             try {
-                addClientService(new Service((SSLSocket) serverSocket.accept(), this, handle));
-            } catch (SocketTimeoutException e){
+                addClientService(new Service((SSLSocket) serverSocket.accept(), this, handle, logging));
+            } catch (SocketTimeoutException e) {
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -170,8 +170,18 @@ public class Server implements Runnable {
 
 
     }
+
+    public boolean isLogging() {
+        return logging;
+    }
+
+    public void setLogging(boolean logging) {
+        this.logging = logging;
+    }
+
     /**
      * Adds new client to the server
+     *
      * @param clientService service for a client
      * @throws IOException service cannot be started
      */
@@ -179,32 +189,37 @@ public class Server implements Runnable {
         clientService.init();
         clients.add(clientService);
         new Thread(clientService).start();
-        System.out.println("ServerApp added new client service");
+        if (logging)
+            System.out.println("ServerApp added new client service");
     }
 
     /**
      * Removes client from the server
+     *
      * @param clientService client to remove from the server
      */
     synchronized void removeClientService(Service clientService) {
         clients.remove(clientService);
         clientService.close();
-        System.out.println("ServerApp removed new client service");
+        if (logging)
+            System.out.println("ServerApp removed new client service");
     }
 
     /**
      * Sends a message to clients
+     *
      * @param msg message to send
      */
     synchronized void send(String msg) {
         for (Service s : clients)
             s.send(msg);
-
-        System.out.println("ServerApp sent to all services : " + msg);
+        if (logging)
+            System.out.println("ServerApp sent to all services : " + msg);
     }
 
     /**
      * Gets next client ID
+     *
      * @return ID of next client
      */
     synchronized int nextID() {
@@ -213,6 +228,7 @@ public class Server implements Runnable {
 
     /**
      * Sends data to client
+     *
      * @param data data to send
      */
     public void sendData(String data) {
@@ -244,6 +260,7 @@ public class Server implements Runnable {
 
     /**
      * Sets a server
+     *
      * @return <i>true</i> if the server was set
      */
     private boolean setServer() {

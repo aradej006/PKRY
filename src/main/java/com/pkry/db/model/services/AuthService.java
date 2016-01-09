@@ -53,7 +53,6 @@ public class AuthService {
     }
 
     public void initAuthDAO() {
-        System.out.println("INIT_AUTH_Adrian_Radej");
         Random rand = new Random();
         if (authRepository.findAll().size() == 0) {
             Address address = new Address();
@@ -213,7 +212,6 @@ public class AuthService {
      * @param auth Auth to update
      */
     public void update(Auth auth) {
-        System.out.println("UPDATE");
         DbKey key = aes.getKey(auth.getLogin());
         Auth a = authRepository.findByLogin(auth.getLogin()).get(0);
         authRepository.delete(a);
