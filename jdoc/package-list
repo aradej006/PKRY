@@ -1,0 +1,11 @@
+com.pkry.db
+com.pkry.db.model
+com.pkry.db.model.DTOs
+com.pkry.db.model.entities
+com.pkry.db.model.repositories
+com.pkry.db.model.services
+com.pkry.db.model.translators
+com.pkry.management
+com.pkry.test
+com.pkry.user
+com.pkry.user.server
